@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文关于回溯法解决全排列问题：   46、全排列1 47、全排列2 93、复原IP 131、分割回文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="回溯法之全排列">
+<meta property="og:url" content="http://yoursite.com/2020/05/11/%E5%9B%9E%E6%BA%AF%E6%B3%95%E4%B9%8B%E5%85%A8%E6%8E%92%E5%88%97/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="本文关于回溯法解决全排列问题：   46、全排列1 47、全排列2 93、复原IP 131、分割回文">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/pasted-62.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-63.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-64.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-65.png">
+<meta property="article:published_time" content="2020-05-11T11:49:00.000Z">
+<meta property="article:modified_time" content="2020-05-11T13:57:48.941Z">
+<meta property="article:author" content="范志豪">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-62.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/11/%E5%9B%9E%E6%BA%AF%E6%B3%95%E4%B9%8B%E5%85%A8%E6%8E%92%E5%88%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>回溯法之全排列 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/11/%E5%9B%9E%E6%BA%AF%E6%B3%95%E4%B9%8B%E5%85%A8%E6%8E%92%E5%88%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          回溯法之全排列
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-05-11 19:49:00 / Modified: 21:57:48" itemprop="dateCreated datePublished" datetime="2020-05-11T19:49:00+08:00">2020-05-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>本文关于<strong>回溯法解决全排列问题</strong>：</p>
+</blockquote>
+<ul>
+<li>46、全排列1</li>
+<li>47、全排列2</li>
+<li>93、复原IP</li>
+<li>131、分割回文<a id="more"></a>
+
+</li>
+</ul>
+<p>关于全排列我们需要以下几点：</p>
+<ul>
+<li>用回溯法解决排列问题的基本框架是<strong>46图2</strong>，我们在其基础上一般会进行如下操作：<ul>
+<li>树节点搜索空间的压缩：每个节点搜索空间的压缩 （46图2需要变为 图1）、这个需要借助于辅助数组，记录已经访问过的节点，47题比较有趣的是，通过map来压缩每个节点的搜索空间，同时保证<strong>递归树的高度</strong>；</li>
+<li>递归树的剪枝：递归树的剪枝，在进入遍历时，通过<code>if</code>语句来筛选复合条件的树的分支（93T中，IP8字符范围为[0,255], 131题，选择的每个分支，必须为回文）</li>
+<li>跳出递归的条件；</li>
+</ul>
+</li>
+</ul>
+<h2 id="46、全排列1"><a href="#46、全排列1" class="headerlink" title="46、全排列1"></a>46、全排列1</h2><ul>
+<li>题目：给定一个不重复序列，返回其所有排列；</li>
+<li>思路：</li>
+</ul>
+<p><img src="/images/pasted-62.png" alt="upload successful"></p>
+<ul>
+<li>代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    &#x2F;&#x2F; 需要借助额外的形参</span><br><span class="line">    void permute(vector&lt;int&gt;&amp; nums, int index, vector&lt;vector&lt;int&gt;&gt;&amp; res, vector&lt;int&gt;&amp; tmp)</span><br><span class="line">    &#123;</span><br><span class="line">        if (index &#x3D;&#x3D; nums.size())&#123;</span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">            return; </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; index; i &lt; nums.size(); i++)</span><br><span class="line">        &#123;</span><br><span class="line">            swap(nums[index], nums[i]);</span><br><span class="line">            tmp[index] &#x3D; nums[index];</span><br><span class="line">            permute(nums, index+1, res, tmp);</span><br><span class="line">            swap(nums[i], nums[index]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; permute(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        &#x2F;&#x2F; 路径：已作出的选择记录在track中</span><br><span class="line">        &#x2F;&#x2F; 可选列表：nums</span><br><span class="line">        &#x2F;&#x2F; 结束条件：nums中的数值全在track中</span><br><span class="line">        vector&lt;int&gt; track(nums.size());      &#x2F;&#x2F; 路径</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; res;        &#x2F;&#x2F;保留的所有满足条件的路径</span><br><span class="line">        permute(nums, 0, res, track);</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="47、全排列2"><a href="#47、全排列2" class="headerlink" title="47、全排列2"></a>47、全排列2</h2><ul>
+<li>思路：</li>
+</ul>
+<p><img src="/images/pasted-63.png" alt="upload successful"></p>
+<ul>
+<li>代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">private:</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; ret;</span><br><span class="line">public:</span><br><span class="line">    void travese(const vector&lt;int&gt;&amp; nums, map&lt;int, int&gt;&amp; umap, vector&lt;int&gt;&amp; res, int size)&#123;</span><br><span class="line">        if (size &lt;&#x3D; 0)&#123;</span><br><span class="line">            ret.push_back(res);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        for (auto&amp;p : umap)&#123;</span><br><span class="line">            if (p.second &gt;0)&#123;</span><br><span class="line">                p.second--;</span><br><span class="line">                res.push_back(p.first);</span><br><span class="line">                travese(nums, umap, res, size - 1);</span><br><span class="line">                res.pop_back();</span><br><span class="line">                p.second++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; permuteUnique(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        vector&lt;int&gt; res;</span><br><span class="line">        map&lt;int, int&gt; umap;</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; nums.size(); i++)&#123;</span><br><span class="line">            if (umap.find(nums[i]) &#x3D;&#x3D; umap.end())  umap[nums[i]] &#x3D; 0;</span><br><span class="line">            umap[nums[i]]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        travese(nums, umap, res, nums.size());</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="93-复原IP"><a href="#93-复原IP" class="headerlink" title="93 复原IP"></a>93 复原IP</h2><ul>
+<li>思路：</li>
+</ul>
+<p><img src="/images/pasted-64.png" alt="upload successful"></p>
+<ul>
+<li>代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">private:</span><br><span class="line">    vector&lt;string&gt; ret;</span><br><span class="line">    </span><br><span class="line">    void helper(const string&amp; s, int start, int step, string ip)&#123;</span><br><span class="line">        &#x2F;&#x2F; 1</span><br><span class="line">        if (start &#x3D;&#x3D; s.size()&amp;&amp; step&#x3D;&#x3D;4)&#123;</span><br><span class="line">            ip.erase(ip.end()-1);</span><br><span class="line">            ret.push_back(ip);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; if(step &gt;4)</span><br><span class="line">        &#x2F;&#x2F;     return;</span><br><span class="line">        if(s.size() - start &gt; (4-step)*3)</span><br><span class="line">            return;</span><br><span class="line">        if (s.size() -start &lt; 4-step)</span><br><span class="line">            return;</span><br><span class="line">        &#x2F;&#x2F; 2</span><br><span class="line">        int num &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; start; i &lt; start+3; i++)&#123;</span><br><span class="line">            num &#x3D; num*10 + s[i] - &#39;0&#39;;</span><br><span class="line">            if (num &lt;&#x3D; 255)&#123;</span><br><span class="line">                ip +&#x3D; s[i];</span><br><span class="line">                helper(s, i+1, step+1, ip+&#39;.&#39;);</span><br><span class="line">            &#125;</span><br><span class="line">            if (num &#x3D;&#x3D;0) break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;string&gt; restoreIpAddresses(string s) &#123;</span><br><span class="line">        string ip;</span><br><span class="line">        helper(s, 0, 0, ip);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="131、分割回文"><a href="#131、分割回文" class="headerlink" title="131、分割回文"></a>131、分割回文</h2><ul>
+<li>思路：</li>
+</ul>
+<p><img src="/images/pasted-65.png" alt="upload successful"></p>
+<ul>
+<li>代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">private:</span><br><span class="line">    vector&lt;vector&lt;string&gt;&gt; ret;</span><br><span class="line"></span><br><span class="line">    bool isPalindrome(const string&amp; s, int start, int end)&#123;</span><br><span class="line">        while(start &lt;&#x3D; end)&#123;</span><br><span class="line">            if (s[start++] !&#x3D; s[end--]) </span><br><span class="line">                return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void dfs(const string&amp; s, int index, vector&lt;string&gt;&amp; path)&#123;</span><br><span class="line">        &#x2F;&#x2F; 1</span><br><span class="line">        if (index &#x3D;&#x3D; s.size())&#123;</span><br><span class="line">            ret.push_back(path);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        for (int i&#x3D;index; i &lt; s.size(); i++)&#123;</span><br><span class="line">            &#x2F;&#x2F; 2</span><br><span class="line">            if (isPalindrome(s, index, i))&#123;</span><br><span class="line">                &#x2F;&#x2F;cout &lt;&lt; s.substr(index, i-index+1) &lt;&lt; &quot;:&quot; &lt;&lt; isPalindrome(s, index, i) &lt;&lt; endl;</span><br><span class="line">                path.push_back(s.substr(index, i-index+1));</span><br><span class="line">                dfs(s, i+1, path);</span><br><span class="line">                path.pop_back();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;string&gt;&gt; partition(string s) &#123;</span><br><span class="line">        vector&lt;string&gt; path;</span><br><span class="line">        dfs(s, 0, path);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><ul>
+<li>leetcode</li>
+<li>波波-玩转算法系列</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/09/C-%E4%B8%80%E4%B9%8B%E6%8C%87%E9%92%88/" rel="prev" title="C++一之指针">
+      <i class="fa fa-chevron-left"></i> C++一之指针
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/14/vim%E9%85%8D%E7%BD%AE/" rel="next" title="vim配置">
+      vim配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#46%E3%80%81%E5%85%A8%E6%8E%92%E5%88%971"><span class="nav-number">1.</span> <span class="nav-text">46、全排列1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#47%E3%80%81%E5%85%A8%E6%8E%92%E5%88%972"><span class="nav-number">2.</span> <span class="nav-text">47、全排列2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#93-%E5%A4%8D%E5%8E%9FIP"><span class="nav-number">3.</span> <span class="nav-text">93 复原IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#131%E3%80%81%E5%88%86%E5%89%B2%E5%9B%9E%E6%96%87"><span class="nav-number">4.</span> <span class="nav-text">131、分割回文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

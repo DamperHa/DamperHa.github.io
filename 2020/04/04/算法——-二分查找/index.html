@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="二分查找三种常用模型 给定排序数组与目标数，返回目标数下标； 给定排序数组与目标数，返回最左侧目标数下标； 给定排序数组与目标数，返回最右侧目标数下标；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法——-二分查找">
+<meta property="og:url" content="http://yoursite.com/2020/04/04/%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="二分查找三种常用模型 给定排序数组与目标数，返回目标数下标； 给定排序数组与目标数，返回最左侧目标数下标； 给定排序数组与目标数，返回最右侧目标数下标；">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-04T13:35:00.000Z">
+<meta property="article:modified_time" content="2020-04-05T01:49:28.958Z">
+<meta property="article:author" content="范志豪">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/04/%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>算法——-二分查找 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/04/%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法——-二分查找
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-04 21:35:00" itemprop="dateCreated datePublished" datetime="2020-04-04T21:35:00+08:00">2020-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-05 09:49:28" itemprop="dateModified" datetime="2020-04-05T09:49:28+08:00">2020-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="二分查找三种常用模型"><a href="#二分查找三种常用模型" class="headerlink" title="二分查找三种常用模型"></a>二分查找三种常用模型</h2><ol>
+<li>给定排序数组与目标数，返回目标数下标；</li>
+<li>给定排序数组与目标数，返回最左侧目标数下标；</li>
+<li>给定排序数组与目标数，返回最右侧目标数下标；<a id="more"></a>
+
+</li>
+</ol>
+<p>对于以上三种模型的代码如下：</p>
+<p>方法一：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">int binarySearch(vector&lt;int&gt; nums, int target)&#123;</span><br><span class="line">    int left &#x3D; 0;</span><br><span class="line">    int right &#x3D; num.size() -1;      &#x2F;&#x2F;初始搜索空间为[left , right]</span><br><span class="line">    while (left &lt;&#x3D; right)&#123;          &#x2F;&#x2F; 跳出while条件left &#x3D; right + 1</span><br><span class="line">        int mid &#x3D; (left + right)&#x2F;2;</span><br><span class="line">        if(nums[mid] &#x3D;&#x3D; target)</span><br><span class="line">            return mid;</span><br><span class="line">        else if (nums[mid] &lt; target)</span><br><span class="line">            left &#x3D; mid + 1;</span><br><span class="line">        else if (nums[mid] &gt; target)</span><br><span class="line">            right &#x3D; mid - 1;</span><br><span class="line">    &#125;</span><br><span class="line">    return -1;           &#x2F;&#x2F; 此时搜索空间为[right + 1, right]，left&#x3D;right+1,已经跳出搜索空间，故返回right</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方法二：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int binarySearch(vector&lt;int&gt; nums, int target)&#123;</span><br><span class="line">    int left &#x3D; 0;</span><br><span class="line">    int right &#x3D;nums.size();         &#x2F;&#x2F;初始搜索空间为[left , right)</span><br><span class="line">    while (left &lt; right)&#123;           &#x2F;&#x2F; 跳出while为left &#x3D;right, 此时已经遍历了搜索空间</span><br><span class="line">        int mid &#x3D; (left + right)&#x2F;2;</span><br><span class="line">        if (nums[mid] &#x3D;&#x3D; target)</span><br><span class="line">            right &#x3D; mid;            &#x2F;&#x2F; 从右侧逼近target</span><br><span class="line">        else if (nums[mid] &lt; target)</span><br><span class="line">            left &#x3D; mid + 1;</span><br><span class="line">        else if (nums[mid] &gt; target)</span><br><span class="line">            right &#x3D; mid;</span><br><span class="line">    &#125;</span><br><span class="line">    if (left &#x3D;&#x3D; nums.size())    return -1;  &#x2F;&#x2F;返回得数，代表着数组中&lt;targe数的个数；</span><br><span class="line">    return left;            &#x2F;&#x2F; 此时left &#x3D; right, 返回谁都OK</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; return nums[left] &#x3D;&#x3D; target? left:-1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方法三：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int binarySearch(vector&lt;int&gt; nums, int target)&#123;</span><br><span class="line">    int left &#x3D; 0;</span><br><span class="line">    int right &#x3D; nums.size();</span><br><span class="line">    while (left &lt; right)&#123;</span><br><span class="line">        int mid &#x3D; (left + right)&#x2F;2;</span><br><span class="line">        if (nums[mid] &#x3D;&#x3D; target)</span><br><span class="line">            left &#x3D; mid + 1;         &#x2F;&#x2F; 从左侧逼近,先加1操作在跳出循环，故最后要减1</span><br><span class="line">        else if (nums[mid] &lt; target)</span><br><span class="line">            left &#x3D; mid +1;</span><br><span class="line">        else if (nums[mid] &gt; target)</span><br><span class="line">            right &#x3D; mid;</span><br><span class="line">    &#125;</span><br><span class="line">    if (left &#x3D;&#x3D; 0)  return -1;</span><br><span class="line">    return left -1;</span><br><span class="line">    &#x2F;&#x2F; return nums[left-1]&#x3D;&#x3D;target? (left-1): -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>以上均来自 labuladong 公众号</strong></p>
+<h2 id="力扣算法题"><a href="#力扣算法题" class="headerlink" title="力扣算法题"></a>力扣算法题</h2><h3 id="35-搜索插入位置"><a href="#35-搜索插入位置" class="headerlink" title="35. 搜索插入位置"></a>35. 搜索插入位置</h3><ul>
+<li>题目：给定一个排序数组和一个目标值，在数组中找到该目标值，并返回索引。如果不存在，返回顺序插入的位置。</li>
+<li>思路：<ol>
+<li>暴力解法：数组中每个数和目标值比较;时间复杂度：O(n)；</li>
+<li>由于数组有序，可以采用二分查找；时间复杂度：O(log2n);</li>
+<li>二分查找注意：搜索空间，跳出循环条件，返回值；</li>
+</ol>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int searchInsert(vector&lt;int&gt;&amp; nums, int target) &#123;</span><br><span class="line">        if (nums.empty())   return 0;</span><br><span class="line">        return binary_search(nums, nums.size(), target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int binary_search(vector&lt;int&gt;&amp; nums, int n, int target)</span><br><span class="line">    &#123;</span><br><span class="line">        int low &#x3D; 0;</span><br><span class="line">        int high &#x3D; n -1;</span><br><span class="line">        while (low &lt;&#x3D; high)</span><br><span class="line">        &#123;</span><br><span class="line">            int mid &#x3D; (low + high) &#x2F;2;</span><br><span class="line">            if (nums[mid] &#x3D;&#x3D; target)</span><br><span class="line">                return mid;</span><br><span class="line">            else if (nums[mid] &lt; target)</span><br><span class="line">                low &#x3D; mid +1;</span><br><span class="line">            else if (nums[mid] &gt; target)</span><br><span class="line">                high &#x3D; mid -1;</span><br><span class="line">        &#125;</span><br><span class="line">        return low;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
+<h3 id="69-x的平方根"><a href="#69-x的平方根" class="headerlink" title="69.x的平方根"></a>69.x的平方根</h3><ul>
+<li>题目：计算并返回 x 的平方根，其中 x 是非负整数。由于返回类型是整数，结果只保留整数的部分，小数部分将被舍去。</li>
+<li>思路：<ol>
+<li>在一个搜索区间，寻找某个数，应该首选二分查找；</li>
+<li>注意溢出现象</li>
+<li>确定搜索空间，跳出条件，返回值；</li>
+</ol>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int mySqrt(int x) &#123;</span><br><span class="line">        if (x &lt;&#x3D;0)  return 0;</span><br><span class="line"></span><br><span class="line">        int low &#x3D; 0;</span><br><span class="line">        int high &#x3D; x&#x2F;2 + 1;</span><br><span class="line">        while (low &lt;&#x3D; high)     &#x2F;&#x2F; 搜索空间为[]</span><br><span class="line">        &#123;</span><br><span class="line">            int mid &#x3D; low + (high - low)&#x2F;2;</span><br><span class="line">            long long sq &#x3D; (long long)mid * (long long)mid;</span><br><span class="line">            if (sq &#x3D;&#x3D; x)</span><br><span class="line">                return mid;</span><br><span class="line">            else if (sq &lt; x)</span><br><span class="line">                low &#x3D; mid + 1;</span><br><span class="line">            else if (sq &gt; x)</span><br><span class="line">                high &#x3D; mid -1;</span><br><span class="line">        &#125;</span><br><span class="line">        return high;        &#x2F;&#x2F; 搜索空间为[low, high]，跳出while的条件是low + 1 &#x3D; high, 此时low &gt; high</span><br><span class="line">                            &#x2F;&#x2F; low已经跳出搜索空间啦</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="167-两数之和-II-输入有序数组"><a href="#167-两数之和-II-输入有序数组" class="headerlink" title="167. 两数之和 II - 输入有序数组"></a>167. 两数之和 II - 输入有序数组</h3><ul>
+<li>题目：给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。</li>
+<li>思路：<ol>
+<li>在搜索空间找数，这里用到了广义上的二分查找吧<br>代码：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; numbers, int target) &#123;</span><br><span class="line">        int low &#x3D; 0;</span><br><span class="line">        int high &#x3D; numbers.size() - 1;</span><br><span class="line">        while (low &lt; high)</span><br><span class="line">        &#123;</span><br><span class="line">            if (numbers[low] + numbers[high] &#x3D;&#x3D; target)</span><br><span class="line">                return &#123;low+1, high+1&#125;;     &#x2F;&#x2F;列表初始化</span><br><span class="line">            else if (numbers[low] + numbers[high] &lt; target)</span><br><span class="line">                low++;</span><br><span class="line">            else if (numbers[low] + numbers[high] &gt; target)</span><br><span class="line">                high--;</span><br><span class="line">        &#125;</span><br><span class="line">        return &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="278-第一个错误版本"><a href="#278-第一个错误版本" class="headerlink" title="278.第一个错误版本"></a>278.第一个错误版本</h3></li>
+</ol>
+</li>
+<li>题目：假设你有 n 个版本 [1, 2, …, n]，你想找出导致之后所有版本出错的第一个错误的版本。</li>
+<li>思路：<ol>
+<li>在搜索空间找确定一个出错版本，利用二分查找；</li>
+</ol>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int firstBadVersion(int n) &#123;</span><br><span class="line">        int low &#x3D; 1;</span><br><span class="line">        int high &#x3D; n;</span><br><span class="line">        &#x2F;&#x2F; 找出最左边的值</span><br><span class="line">        while (low &lt;&#x3D; high)</span><br><span class="line">        &#123;</span><br><span class="line">            int mid &#x3D; low + (high -low)&#x2F;2;</span><br><span class="line">            if (!isBadVersion(mid))     &#x2F;&#x2F;不是错误版本，low后移</span><br><span class="line">                low &#x3D; mid + 1;</span><br><span class="line">            else if (isBadVersion(mid))     &#x2F;&#x2F;</span><br><span class="line">                high &#x3D;mid -1;</span><br><span class="line">        &#125;   </span><br><span class="line">        return high+1;   </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="367-有效平均数"><a href="#367-有效平均数" class="headerlink" title="367.有效平均数"></a>367.有效平均数</h2><ul>
+<li>题目：给定一个正整数 num，编写一个函数，如果 num 是一个完全平方数，则返回 True，否则返回 False。</li>
+<li>思路：<ul>
+<li>与上题实现sqrt(x)类似，采用二分查找</li>
+<li>注意搜索空间、跳出循环的条件、返回值；</li>
+</ul>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isPerfectSquare(int num) &#123;</span><br><span class="line">        if (num &lt; 0) return false;</span><br><span class="line"></span><br><span class="line">        int low &#x3D; 1;</span><br><span class="line">        int high &#x3D; num&#x2F;2 + 1;</span><br><span class="line"></span><br><span class="line">        while (low &lt;&#x3D; high)</span><br><span class="line">        &#123;</span><br><span class="line">            int mid &#x3D; low + (high -low)&#x2F;2;</span><br><span class="line">            long long sq &#x3D; (long long)mid * (long long)mid;</span><br><span class="line">            if (sq &#x3D;&#x3D; num)</span><br><span class="line">                return true;</span><br><span class="line">            else if(sq &lt; num)</span><br><span class="line">                low &#x3D; mid +1;</span><br><span class="line">            else if (sq &gt; num)</span><br><span class="line">                high &#x3D; mid - 1;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="374-猜数字大小"><a href="#374-猜数字大小" class="headerlink" title="374.猜数字大小"></a>374.猜数字大小</h3><p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int guessNumber(int n) &#123;</span><br><span class="line">        if (guess(n) &#x3D;&#x3D; 0)  return n;</span><br><span class="line">        int low &#x3D; 1;</span><br><span class="line">        int high &#x3D; n;</span><br><span class="line">        while (low &lt;&#x3D; high)</span><br><span class="line">        &#123;</span><br><span class="line">            int mid &#x3D; low + (high - low)&#x2F;2;</span><br><span class="line">            if (guess(mid) &#x3D;&#x3D; 0)</span><br><span class="line">                return mid;</span><br><span class="line">            else if (guess(mid) &#x3D;&#x3D; 1)</span><br><span class="line">                low &#x3D; mid + 1;</span><br><span class="line">            else if (guess(mid) &#x3D;&#x3D; -1)</span><br><span class="line">                high &#x3D; mid -1;</span><br><span class="line">        &#125;</span><br><span class="line">        return high;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="441-排列硬币"><a href="#441-排列硬币" class="headerlink" title="441.排列硬币"></a>441.排列硬币</h3><ul>
+<li>题目：你总共有 n 枚硬币，你需要将它们摆成一个阶梯形状，第 k 行就必须正好有 k 枚硬币。给定一个数字 n，找出可形成完整阶梯行的总行数。n 是一个非负整数，并且在32位有符号整型的范围内。</li>
+<li>思路：<ul>
+<li>t个数求和公式</li>
+<li>利用二分查找确定t的值</li>
+</ul>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int arrangeCoins(int n) &#123;</span><br><span class="line">        if (n &lt;&#x3D;1)  return n;</span><br><span class="line">        long long low &#x3D; 1;</span><br><span class="line">        long long high &#x3D; n;</span><br><span class="line">        while (low &lt;&#x3D; high)</span><br><span class="line">        &#123;</span><br><span class="line">            long long mid &#x3D; low + (high - low)&#x2F;2;</span><br><span class="line">            long long t &#x3D; (mid + 1)*mid&#x2F;2;</span><br><span class="line">            if (t &#x3D;&#x3D; n)</span><br><span class="line">                return mid;</span><br><span class="line">            else if (t &lt; n)</span><br><span class="line">                low &#x3D; mid + 1;</span><br><span class="line">            else if (t &gt; n)</span><br><span class="line">                high &#x3D; mid -1;</span><br><span class="line">        &#125;</span><br><span class="line">        return high;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="475-供暖器"><a href="#475-供暖器" class="headerlink" title="475.供暖器"></a>475.供暖器</h3><ul>
+<li>题目：现在，给出位于一条水平线上的房屋和供暖器的位置，找到可以覆盖所有房屋的最小加热半径。所以，你的输入将会是房屋和供暖器的位置。你将输出供暖器的最小加热半径。</li>
+<li>思路：<ul>
+<li>给定两个数组，一个表示房屋，一个表示供暖器；</li>
+<li>我们需要计算每个离房屋最近的那个供暖器之间的距离。所以需要一个<strong>for</strong>语句遍历所有的房屋，找出与该房屋附近的两个供暖器，计算他两距离，取最小值；</li>
+<li>找离最近的供暖器，排序供暖器—利用二分查找</li>
+</ul>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int findRadius(vector&lt;int&gt;&amp; houses, vector&lt;int&gt;&amp; heaters) &#123;</span><br><span class="line">        int res &#x3D; 0, n &#x3D; heaters.size();        </span><br><span class="line">        sort(heaters.begin(), heaters.end());</span><br><span class="line">        for (int house : houses) &#123;</span><br><span class="line">            int left &#x3D; 0, right &#x3D; n;</span><br><span class="line">            while (left &lt; right) &#123;</span><br><span class="line">                int mid &#x3D; left + (right - left) &#x2F; 2;</span><br><span class="line">                if (heaters[mid] &lt; house) left &#x3D; mid + 1;</span><br><span class="line">                else right &#x3D; mid;</span><br><span class="line">            &#125;</span><br><span class="line">            int dist1 &#x3D; (right &#x3D;&#x3D; n) ? INT_MAX : heaters[right] - house;</span><br><span class="line">            int dist2 &#x3D; (right &#x3D;&#x3D; 0) ? INT_MAX : house - heaters[right - 1];</span><br><span class="line">            res &#x3D; max(res, min(dist1, dist2));</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>错误代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int findRadius(vector&lt;int&gt;&amp; houses, vector&lt;int&gt;&amp; heaters) &#123;</span><br><span class="line">        int res &#x3D;0, n &#x3D; heaters.size();</span><br><span class="line">        sort(heaters.begin(), heaters.end());</span><br><span class="line">        for (int house : houses)</span><br><span class="line">        &#123;</span><br><span class="line">            int left &#x3D;0, right &#x3D; n-1;</span><br><span class="line">            while (left &lt;&#x3D; right)</span><br><span class="line">            &#123;</span><br><span class="line">                int mid &#x3D; left + (right - left)&#x2F;2;</span><br><span class="line">                if (heaters[mid] &lt; house)</span><br><span class="line">                    left &#x3D; mid + 1;</span><br><span class="line">                else if (heaters[mid] &gt;house)</span><br><span class="line">                    right &#x3D; mid -1;</span><br><span class="line">                else if(heaters[mid] &#x3D;&#x3D; house)</span><br><span class="line">                    right &#x3D; mid;            &#x2F;&#x2F; 当right &#x3D;left &#x3D;mid时， 无线循环</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            int dst1 &#x3D; (right &#x3D;&#x3D; (n-1))? INT_MAX : heaters[right] - house;</span><br><span class="line">            int dst2 &#x3D; (right &#x3D;&#x3D; 0)? INT_MAX: house - heaters[right-1];</span><br><span class="line">            res &#x3D; max(res, min(dst1, dst2));</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>错误代码在与当left=mid=right是代码不能跳出循环，由此可以看出，对于某些需求（有重复项，需确定边界、没有确定相等值）需要通过<strong>左闭右开</strong>的搜索空间；</p>
+<ul>
+<li>有重复项，需确定边界，模型2，3；</li>
+<li>没有确定相等项。此T</li>
+</ul>
+<h3 id="852-山脉数组顶峰索引"><a href="#852-山脉数组顶峰索引" class="headerlink" title="852.山脉数组顶峰索引"></a>852.山脉数组顶峰索引</h3><ul>
+<li>题目：给定一个确定为山脉的数组，返回任何满足 A[0] &lt; A[1] &lt; … A[i-1] &lt; A[i] &gt; A[i+1] &gt; … &gt; A[A.length - 1] 的 i 的值。</li>
+<li>思路：<ul>
+<li>排除不是山脉数组情况</li>
+<li>利用二分查找确定复合条件的索引；</li>
+</ul>
+</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int peakIndexInMountainArray(vector&lt;int&gt;&amp; A) &#123;</span><br><span class="line">        if (A.size() &lt; 3)</span><br><span class="line">            return -1;</span><br><span class="line"></span><br><span class="line">        int low &#x3D; 0;</span><br><span class="line">        int high &#x3D; A.size() -1;</span><br><span class="line">        while (low &lt;&#x3D; high)</span><br><span class="line">        &#123;</span><br><span class="line">            int mid &#x3D; (low + high)&#x2F;2;</span><br><span class="line">            if ( A[mid -1]&lt; A[mid] &amp;&amp; A[mid] &gt; A[mid + 1])</span><br><span class="line">                return mid;</span><br><span class="line">            else if(A[mid-1] &lt; A[mid] &amp;&amp; A[mid] &lt; A[mid + 1])</span><br><span class="line">                low &#x3D;mid + 1;</span><br><span class="line">            else if (A[mid-1] &gt; A[mid] &amp;&amp; A[mid] &gt; A[mid + 1])</span><br><span class="line">                high &#x3D; mid - 1;</span><br><span class="line">        &#125;</span><br><span class="line">        return high;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>微信公众号：labuladong</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/30/%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0-md/" rel="prev" title="构造函数.md">
+      <i class="fa fa-chevron-left"></i> 构造函数.md
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E4%BA%8C%E5%8F%89%E5%A0%86/" rel="next" title="数据结构-二叉堆">
+      数据结构-二叉堆 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E4%B8%89%E7%A7%8D%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">二分查找三种常用模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9B%E6%89%A3%E7%AE%97%E6%B3%95%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">力扣算法题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#35-%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">35. 搜索插入位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#69-x%E7%9A%84%E5%B9%B3%E6%96%B9%E6%A0%B9"><span class="nav-number">2.2.</span> <span class="nav-text">69.x的平方根</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#167-%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C-II-%E8%BE%93%E5%85%A5%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84"><span class="nav-number">2.3.</span> <span class="nav-text">167. 两数之和 II - 输入有序数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#278-%E7%AC%AC%E4%B8%80%E4%B8%AA%E9%94%99%E8%AF%AF%E7%89%88%E6%9C%AC"><span class="nav-number">2.4.</span> <span class="nav-text">278.第一个错误版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#367-%E6%9C%89%E6%95%88%E5%B9%B3%E5%9D%87%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">367.有效平均数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#374-%E7%8C%9C%E6%95%B0%E5%AD%97%E5%A4%A7%E5%B0%8F"><span class="nav-number">3.1.</span> <span class="nav-text">374.猜数字大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#441-%E6%8E%92%E5%88%97%E7%A1%AC%E5%B8%81"><span class="nav-number">3.2.</span> <span class="nav-text">441.排列硬币</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#475-%E4%BE%9B%E6%9A%96%E5%99%A8"><span class="nav-number">3.3.</span> <span class="nav-text">475.供暖器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#852-%E5%B1%B1%E8%84%89%E6%95%B0%E7%BB%84%E9%A1%B6%E5%B3%B0%E7%B4%A2%E5%BC%95"><span class="nav-number">3.4.</span> <span class="nav-text">852.山脉数组顶峰索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

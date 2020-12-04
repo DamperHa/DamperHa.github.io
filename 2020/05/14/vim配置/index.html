@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在到一新的Linux机器上时，没有插件的vim也能很好的工作（对于大神）。对于我这种小菜鸟，那是灾难啊。本文记录昨晚八点到现在所查阅关于vim的配置相关资料，主要涉及：  管理插件的工具vim-plug 配置c++环境的vim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim配置">
+<meta property="og:url" content="http://yoursite.com/2020/05/14/vim%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="在到一新的Linux机器上时，没有插件的vim也能很好的工作（对于大神）。对于我这种小菜鸟，那是灾难啊。本文记录昨晚八点到现在所查阅关于vim的配置相关资料，主要涉及：  管理插件的工具vim-plug 配置c++环境的vim">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-14T03:44:00.000Z">
+<meta property="article:modified_time" content="2020-05-15T05:06:47.684Z">
+<meta property="article:author" content="范志豪">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/14/vim%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>vim配置 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/14/vim%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vim配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-14 11:44:00" itemprop="dateCreated datePublished" datetime="2020-05-14T11:44:00+08:00">2020-05-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-15 13:06:47" itemprop="dateModified" datetime="2020-05-15T13:06:47+08:00">2020-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在到一新的Linux机器上时，没有插件的<code>vim</code>也能很好的工作（对于大神）。对于我这种小菜鸟，那是灾难啊。本文记录昨晚八点到现在所查阅关于vim的配置相关资料，主要涉及：</p>
+<ul>
+<li>管理插件的工具vim-plug</li>
+<li>配置c++环境的vim</li>
+</ul>
+<a id="more"></a>
+
+<p>昨晚刚开始，使用的是<code>space-vim</code>，这种自带的配置环境，虽然其<code>space+</code>的操作让我很惊艳。但是选项太多，让我感觉有些笨重，学习起来也用不到这么多东西，加上又不懂<code>vim-scrprit</code>语言，不能给自己减负。因此尝试自己配置<code>.vimrc</code>文件。vim的配置文件有系统配置文件与用户配置文件，我们修改的是用户配置文件，如下：</p>
+<ul>
+<li><code>~/.vim</code></li>
+<li><code>/.vimrc</code></li>
+</ul>
+<h2 id="vim-plug"><a href="#vim-plug" class="headerlink" title="vim-plug"></a>vim-plug</h2><p><a target="_blank" rel="noopener" href="https://github.com/junegunn/vim-plug">vim-plug</a>是一个插件管理器，安装以后，我们可以在<code>.vimrc</code>中安装相应地插件；</p>
+<ul>
+<li><p>Unix下安装指令：<br><code>curl -fLo ~/.vim/autoload/plug.vim --create-dirs \   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</code></p>
+</li>
+<li><p>具体安装</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">call plug#begin(&#39;~&#x2F;.vim&#x2F;plugged&#39;)</span><br><span class="line">&quot;Plug &#39;liuchengxu&#x2F;space-vim-theme&#39; </span><br><span class="line">Plug &#39;valloric&#x2F;youcompleteme&#39;</span><br><span class="line">Plug &#39;tomasr&#x2F;molokai&#39;</span><br><span class="line">call plug#end()</span><br></pre></td></tr></table></figure>
+<p>vim中用<code>&quot;</code>来注释代码，插件安装在<code>~/./vim/plugged</code>;如果需要安装某插件只需添加这样一条语句即可：<code>Plug 插件名</code>。如果不知道具体的插件名，可以在这个网站查看具体插件名：<br><a target="_blank" rel="noopener" href="https://vimawesome.com/plugin/youcompleteme">vimawesom</a></p>
+<h2 id="配置C-环境"><a href="#配置C-环境" class="headerlink" title="配置C++环境"></a>配置C++环境</h2><h3 id="括号匹配插件delimitMate"><a href="#括号匹配插件delimitMate" class="headerlink" title="括号匹配插件delimitMate"></a>括号匹配插件<a target="_blank" rel="noopener" href="https://github.com/Raimondi/delimitMate/blob/master/doc/delimitMate.txt">delimitMate</a></h3><p>利用该插件的一下 功能：</p>
+<ul>
+<li>输入左边括号补全右边括号；</li>
+<li>输入一对括号，按回车，自动分成3行并完成缩进；</li>
+<li>输入前引号，匹配后引号</li>
+</ul>
+<p>在<code>.vimrc</code>设置以下全局变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let delimitMate_expand_space &#x3D; 1</span><br><span class="line">let delimitMate_expand_cr &#x3D; 1</span><br></pre></td></tr></table></figure>
+<p>通过 <code>help delimitMate.txt</code>查看文档；</p>
+<h3 id="NERDTree"><a href="#NERDTree" class="headerlink" title="NERDTree"></a>NERDTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">map &lt;F3&gt; :NERDTreeMirror&lt;CR&gt;</span><br><span class="line">map &lt;F3&gt; :NERDTreeToggle&lt;CR&gt;</span><br></pre></td></tr></table></figure>
+<p>当我们编辑一个文件是，按<code>F3</code>，这个时候会出现文件目录树：</p>
+<ul>
+<li>m ：进入文件系统，可以进行删除、新增、移除、复制等操作；</li>
+<li><code>i</code>打开对应文件，并水平分割；<code>s</code>垂直分割；</li>
+<li><code>p</code>到上层目录,<code>P</code>到根目录</li>
+<li><code>q</code>关闭</li>
+<li><code>t</code>新建tab</li>
+<li><code>T</code>后台新建tab（没懂）</li>
+</ul>
+<h3 id="NERD-commenter"><a href="#NERD-commenter" class="headerlink" title="NERD commenter"></a>NERD commenter</h3><p>这个插件用来注释的，有以下操作：</p>
+<ul>
+<li>\cc ：注释当前行和选中行</li>
+<li>\ca：转换注释方式，\**\与\\之间的转换</li>
+<li>\cu：取消注释</li>
+<li>\cA：在当前行末尾加注释，并进入插入模式</li>
+<li>\cm：对选中区域注释</li>
+</ul>
+<p><code>\</code>在这里就是leader，可以根据喜好设置；</p>
+<p>参考资料：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://harttle.land/2015/11/07/vim-cursor.html">配置一个C++的vim</a></li>
+</ul>
+<h3 id="tagbar"><a href="#tagbar" class="headerlink" title="tagbar"></a>tagbar</h3><p>安装tagbar前首先应该安装<code>ctags</code>这个依赖，该依赖执行这个代码：<br><code>sudo apt-get install ctags</code><br>在其中设置全局变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap &lt;F12&gt; :TagbarToggle&lt;CR&gt;</span><br></pre></td></tr></table></figure>
+<p>这样我们就可以通过<code>F12</code>就会显示文件大纲；</p>
+<h3 id="vim的整体设计（根据需求不断更新）"><a href="#vim的整体设计（根据需求不断更新）" class="headerlink" title="vim的整体设计（根据需求不断更新）"></a>vim的整体设计（根据需求不断更新）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">set autoindent &quot;自动缩进</span><br><span class="line">set cindent &quot;c自动缩颈</span><br><span class="line">set shiftwidth&#x3D;4    &quot;自动缩进的空白字符</span><br><span class="line">set softtabstop&#x3D;4   </span><br><span class="line">set tabstop&#x3D;4</span><br><span class="line">set nu</span><br><span class="line">set t_Co&#x3D;256</span><br><span class="line">set background&#x3D;light</span><br><span class="line">synatx on</span><br><span class="line"></span><br><span class="line">call plug#begin(&#39;~&#x2F;.vim&#x2F;plugged&#39;)</span><br><span class="line">&quot;******************colormap***************</span><br><span class="line">Plug &#39;nanotech&#x2F;jellybeans.vim&#39;</span><br><span class="line">Plug &#39;scrooloose&#x2F;nerdtree&#39;</span><br><span class="line">Plug &#39;valloric&#x2F;youcompleteme&#39;</span><br><span class="line">Plug &#39;scrooloose&#x2F;nerdcommenter&#39;</span><br><span class="line">Plug &#39;raimondi&#x2F;delimitmate&#39;</span><br><span class="line">Plug &#39;joshdick&#x2F;onedark.vim&#39;</span><br><span class="line">Plug &#39;majutsushi&#x2F;tagbar&#39;</span><br><span class="line">call plug#end()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">set g:tagbar_ctags_bin&#x3D;&#39;&#x2F;home&#x2F;ubuntu&#x2F;.vim&#x2F;plugged&#x2F;ctags.vim&#x2F;plugin&#x2F;ctags.vim&#39;</span><br><span class="line"></span><br><span class="line">colorscheme onedark</span><br><span class="line">g:onedark_terminal_italics&#x3D;1</span><br><span class="line">let g:molokai_original &#x3D; 1 </span><br><span class="line">&quot;let g:rehash256&#x3D;1</span><br><span class="line">&quot;let g:molokai_original&#x3D;1</span><br><span class="line">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;delimitMate自动三行缩进************&quot;</span><br><span class="line">let delimitMate_expand_space &#x3D; 1 </span><br><span class="line">let delimitMate_expand_cr &#x3D; 1 </span><br><span class="line">&quot;</span><br><span class="line">&quot;</span><br><span class="line">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&#39;&#39;&#39;NERDTree&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span><br><span class="line">map &lt;F3&gt; :NERDTreeMirror&lt;CR&gt;</span><br><span class="line">map &lt;F3&gt; :NERDTreeToggle&lt;CR&gt;</span><br><span class="line"></span><br><span class="line">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;编译&#x2F;运行&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span><br><span class="line">nnoremap &lt;F5&gt;   &lt;Esc&gt;:w&lt;CR&gt;:!g++ -std&#x3D;c++11 % -o &#x2F;tmp&#x2F;a.out &amp;&amp; &#x2F;tmp&#x2F;a.out&lt;CR&gt;</span><br><span class="line">nnoremap &lt;F7&gt;   &lt;Esc&gt;:w&lt;CR&gt;:!g++ -std&#x3D;c++11 %&lt;CR&gt;</span><br><span class="line">nnoremap &lt;C-F5&gt; &lt;Esc&gt;:w&lt;CR&gt;:!g++ -std&#x3D;c++11 -g % -o &#x2F;tmp&#x2F;a.out &amp;&amp; gdb &#x2F;tmp&#x2F;a.out&lt;CR&gt;</span><br><span class="line">&quot;&quot;&quot;&quot;&quot;&quot;&#39;&#39;&#39;&#39;&#39;&#39;&#39;Tab&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;&#39;</span><br><span class="line">noremap &lt;C-L&gt; &lt;Esc&gt;:tabnext&lt;CR&gt; </span><br><span class="line">noremap &lt;C-H&gt; &lt;Esc&gt;:tabprevious&lt;CR&gt;</span><br><span class="line"></span><br><span class="line">nmap &lt;F12&gt; :TagbarToggle&lt;CR&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/11/%E5%9B%9E%E6%BA%AF%E6%B3%95%E4%B9%8B%E5%85%A8%E6%8E%92%E5%88%97/" rel="prev" title="回溯法之全排列">
+      <i class="fa fa-chevron-left"></i> 回溯法之全排列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/15/GNU%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="next" title="GNU基础知识">
+      GNU基础知识 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vim-plug"><span class="nav-number">1.</span> <span class="nav-text">vim-plug</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEC-%E7%8E%AF%E5%A2%83"><span class="nav-number">2.</span> <span class="nav-text">配置C++环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%AC%E5%8F%B7%E5%8C%B9%E9%85%8D%E6%8F%92%E4%BB%B6delimitMate"><span class="nav-number">2.1.</span> <span class="nav-text">括号匹配插件delimitMate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NERDTree"><span class="nav-number">2.2.</span> <span class="nav-text">NERDTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NERD-commenter"><span class="nav-number">2.3.</span> <span class="nav-text">NERD commenter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tagbar"><span class="nav-number">2.4.</span> <span class="nav-text">tagbar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim%E7%9A%84%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1%EF%BC%88%E6%A0%B9%E6%8D%AE%E9%9C%80%E6%B1%82%E4%B8%8D%E6%96%AD%E6%9B%B4%E6%96%B0%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">vim的整体设计（根据需求不断更新）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

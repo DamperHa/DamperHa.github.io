@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文设计左值右值、const、进程的内存布局、智能指针；  指针有两层含有两层含义：本身和其所指的内容；正因为此，相比其他变量较为复杂；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++一之指针">
+<meta property="og:url" content="http://yoursite.com/2020/05/09/C-%E4%B8%80%E4%B9%8B%E6%8C%87%E9%92%88/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="本文设计左值右值、const、进程的内存布局、智能指针；  指针有两层含有两层含义：本身和其所指的内容；正因为此，相比其他变量较为复杂；">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/pasted-59.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-60.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-40.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-61.png">
+<meta property="article:published_time" content="2020-05-09T09:02:00.000Z">
+<meta property="article:modified_time" content="2020-05-10T07:27:48.879Z">
+<meta property="article:author" content="范志豪">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-59.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/09/C-%E4%B8%80%E4%B9%8B%E6%8C%87%E9%92%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>C++一之指针 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/09/C-%E4%B8%80%E4%B9%8B%E6%8C%87%E9%92%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++一之指针
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-09 17:02:00" itemprop="dateCreated datePublished" datetime="2020-05-09T17:02:00+08:00">2020-05-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-10 15:27:48" itemprop="dateModified" datetime="2020-05-10T15:27:48+08:00">2020-05-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>本文设计左值右值、const、进程的内存布局、智能指针；</p>
+</blockquote>
+<p>指针有两层含有两层含义：本身和其所指的内容；正因为此，相比其他变量较为复杂；</p>
+<a id="more"></a>
+
+<h2 id="左值与右值"><a href="#左值与右值" class="headerlink" title="左值与右值"></a>左值与右值</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><img src="/images/pasted-59.png" alt="upload successful"><br>一般来说，编译器为其单独分配一块地址，可以取其地址。左值可以放在赋值运算符左边；右值指数据本身，不能取其地址，右值只能在赋值运算符右边；左值最常见的情况是函数和数据成员的名字；右值一般是临时对象，一般没有标志符、取地址操作；</p>
+<h3 id="运算符返回值是左值还是右值？"><a href="#运算符返回值是左值还是右值？" class="headerlink" title="运算符返回值是左值还是右值？"></a>运算符返回值是左值还是右值？</h3><p>运算符本身是一个函数，他的返回值为左值还是右值，由返回是 <strong>引用传值还是值传递</strong>有关；在<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tianrks/p/10932197.html">操作符原型</a>中，我们能看到只有<code>++i</code>和<code>--i</code>返回值为引用，因此其为左值；</p>
+<p><img src="/images/pasted-60.png" alt="upload successful"></p>
+<h3 id="const"><a href="#const" class="headerlink" title="const"></a>const</h3><p>const作用于指针具有顶层const和底层const两种特性；顶层const表示指针本身是一个常量，底层const表示所指内容是一个常量；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const int* i &#x3D; 7;		&#x2F;&#x2F; 所指内容为const</span><br><span class="line">int const* j &#x3D; 7;		&#x2F;&#x2F; 所指内容为const</span><br><span class="line">int* cont z &#x3D; 7;		&#x2F;&#x2F; 指针本身为const</span><br></pre></td></tr></table></figure>
+<p>如果const在<code>*</code>左边，表示所指内容为const，为底层const；如果const在<code>*</code>右边，表示指针本身为const；</p>
+<h3 id="函数指针"><a href="#函数指针" class="headerlink" title="函数指针"></a>函数指针</h3><p><code>void (*signal(int sig, void(*func)(int)))(int)</code>函数的解释：</p>
+<ul>
+<li><code>void (*signal(   ))(int)</code></li>
+<li>signal是一个函数，他返回一个指向函数的指针，该函数返回值为<code>void</code>，接受一个<code>int</code>参数；</li>
+<li><code>void(*func)(int)</code></li>
+<li>signal函数接受两个参数，其中一个为int，另一个为一个函数指针，该函数接受一个int，返回为void；</li>
+<li>注意两者之间的区别；</li>
+</ul>
+<h3 id="内存泄漏和野指针"><a href="#内存泄漏和野指针" class="headerlink" title="内存泄漏和野指针"></a>内存泄漏和野指针</h3><p>内存泄漏和野指针主要发生在堆内分配方式中;</p>
+<ul>
+<li>内存泄漏<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while()</span><br><span class="line">&#123;</span><br><span class="line">	int* i &#x3D; new int(10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+以上代码中，<code>i</code>是栈中变量，离开作用域后，自动释放；但是<code>new int(10)</code>这部分是在堆中分配内存，需要程序员手动执行<code>free</code>释放；因此产生内存泄漏；</li>
+<li>野指针<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int *i, *j  &#x3D; NULL;</span><br><span class="line">i &#x3D; new int(4);</span><br><span class="line">j &#x3D; i;</span><br><span class="line">delete i;</span><br></pre></td></tr></table></figure>
+i，j所指同一块堆内存，当delete i,后j然后指向该内存，因此成为野指针；</li>
+</ul>
+<h3 id="内存布局"><a href="#内存布局" class="headerlink" title="内存布局"></a>内存布局</h3><p><img src="/images/pasted-40.png" alt="Linux运行时存储器映像"><br>在前面有记录内存布局的相关知识，这里只是为了说明：局部变量在堆中分配内存，动态内存在栈中分配内存，栈中的内存编译器不会自动释放，需要程序员执行相应地操作；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">int a &#x3D; 0;                                                &#x2F;&#x2F;(GVAR)全局初始化区 </span><br><span class="line">int* p1;                                                   &#x2F;&#x2F;(bss)全局未初始化区 </span><br><span class="line">int main()                                               &#x2F;&#x2F;(text)代码区</span><br><span class="line">&#123;</span><br><span class="line">	int b &#x3D; 1;                                              &#x2F;&#x2F;(stack)栈区变量 </span><br><span class="line">	char s[] &#x3D; &quot;abc&quot;;                                 &#x2F;&#x2F;(stack)栈区变量</span><br><span class="line">	int* p2 &#x3D; NULL;                                     &#x2F;&#x2F;(stack)栈区变量</span><br><span class="line">	const char* p3 &#x3D; &quot;123456&quot;;                         &#x2F;&#x2F;123456\0在常量区, p3在(stack)栈区</span><br><span class="line">	static int c &#x3D; 0;                                   &#x2F;&#x2F;(GVAR)全局(静态)初始化区 </span><br><span class="line">	p1 &#x3D; new int(10);                               &#x2F;&#x2F;(heap)堆区变量</span><br><span class="line">	p2 &#x3D; new int(20);                               &#x2F;&#x2F;(heap)堆区变量</span><br><span class="line">	char* p4 &#x3D; new char[7];                     &#x2F;&#x2F;(heap)堆区变量</span><br><span class="line">	strcpy_s(p4, 7, &quot;123456&quot;);                  &#x2F;&#x2F;(text)代码区</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F;(text)代码区</span><br><span class="line">	if (p1 !&#x3D; NULL)&#123;</span><br><span class="line">		delete p1;</span><br><span class="line">		p1 &#x3D; NULL;</span><br><span class="line">	&#125;</span><br><span class="line">	if (p2 !&#x3D; NULL)&#123;</span><br><span class="line">		delete p2;</span><br><span class="line">		p2 &#x3D; NULL;</span><br><span class="line">	&#125;</span><br><span class="line">	if (p4 !&#x3D; NULL)&#123;</span><br><span class="line">		delete[] p4;</span><br><span class="line">		p4 &#x3D; NULL;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F;(text)代码区</span><br><span class="line">	return 0;                                            &#x2F;&#x2F;(text)代码区</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序通常需要牵涉三个内存管理器的操作：</p>
+<ol>
+<li>分配一个某个大小的内存块</li>
+<li>释放之前分配的内存块</li>
+<li>垃圾收集操作，寻找不再使用的内存并予以释放；<br>C++做1，2两种，Java做3；</li>
+</ol>
+<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><p>C++语言依赖RAII（Resource Acquisition Is Initialization）来作资源管理的。其依托栈和析构函数，有比较成熟的智能指针代表：<code>std::auto_ptr</code>和boost:shared_ptr；C++中有四种常用指针：<code>unique_ptr, shared_ptr, weak_ptr</code>；了解这些指针需要从这几个方向入手：</p>
+<ul>
+<li>应用场景<ul>
+<li>对象所有权</li>
+<li>生命周期</li>
+</ul>
+</li>
+<li>性能分析；</li>
+</ul>
+<h4 id="auto-ptr（已作古）"><a href="#auto-ptr（已作古）" class="headerlink" title="auto_ptr（已作古）"></a>auto_ptr（已作古）</h4><ul>
+<li>由<code>new</code>获得对象，在<code>auto_ptr</code>对象销毁时，他所管理的对象也会自动被释放；（这个是不是很好的解决了内存泄漏问题）</li>
+<li>所有权转移：如果将<code>auto_ptr</code>赋值给另外一个变量，那么原指针不再拥有这个对象并置为<code>nullptr</code>。新指针拥有该内存的所有权限；</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">auto_ptr&lt;int&gt; pI(new int(10));</span><br><span class="line">auto_ptr&lt;string&gt; pC;</span><br><span class="line">pC &#x3D; pI; &#x2F;&#x2F; pI loses ownership. 将所有权从pI转让给pC，并pI &#x3D; nullptr</span><br></pre></td></tr></table></figure>
+<h4 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h4><ul>
+<li><code>unique_ptr</code>是专属所有权，所有<code>unique_ptr</code>管理的内存，只能被一个对象持有，不支持复制和赋值；</li>
+<li>移动语义：<code>unique_ptr</code>禁止拷贝语义，如果需要转移所有权，即可用<code>std::move()</code>进行控制所有权的转移。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;memory&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	&#x2F;&#x2F; 在这个范围之外，unique_ptr被释放</span><br><span class="line">	&#123;</span><br><span class="line">		auto i &#x3D; unique_ptr&lt;int&gt;(new int(10));</span><br><span class="line">		cout &lt;&lt; *i &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; unique_ptr</span><br><span class="line">	auto w &#x3D; std::make_unique&lt;int&gt;(10);</span><br><span class="line">	cout &lt;&lt; *(w.get()) &lt;&lt; endl;                             &#x2F;&#x2F; 10</span><br><span class="line">	&#x2F;&#x2F;auto w2 &#x3D; w; &#x2F;&#x2F; 编译错误如果想要把 w 复制给 w2, 是不可以的。</span><br><span class="line">	&#x2F;&#x2F;  因为复制从语义上来说，两个对象将共享同一块内存。</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; unique_ptr 只支持移动语义, 即如下</span><br><span class="line">	auto w2 &#x3D; std::move(w); &#x2F;&#x2F; w2 获得内存所有权，w 此时等于 nullptr</span><br><span class="line">	cout &lt;&lt; ((w.get() !&#x3D; nullptr) ? (*w.get()) : -1) &lt;&lt; endl;       &#x2F;&#x2F; -1</span><br><span class="line">	cout &lt;&lt; ((w2.get() !&#x3D; nullptr) ? (*w2.get()) : -1) &lt;&lt; endl;   &#x2F;&#x2F; 10</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码我们需要注意以下几点：</p>
+<ul>
+<li><code>unique_ptr</code>是一个类，通过该类的方法<code>get()</code>可以获得其管理内存的地址。</li>
+<li>由于该类的对象分配在堆空间，当脱离作用域后，执行析构函数，delete掉地址所对应的内存；</li>
+</ul>
+<h4 id="shared-ptr"><a href="#shared-ptr" class="headerlink" title="shared_ptr"></a>shared_ptr</h4><p><code>share_ptr</code>通过一个引用计数共享一个对象，记录该内存对象所引用的对象。每增加一个，改引用加1，减少一个减一；当引用计数为0的时候，执行析构函数，释放内存；shared_ptr指针很好缓解了普通指针管理动态内存的麻烦。但是会出现 <strong>循环引用的问题</strong>，同样会出现内存泄漏，为了解决这个问题，提出<code>weaked_ptr</code>的概念，该指针不增加引用技术的变化；</p>
+<ul>
+<li><code>move()</code>操作与<code>uniqued_ptr</code>类似，转移所有权，同时<code>shared_ptr</code>对象管理的指针变为<code>nullptr</code>；</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct B;</span><br><span class="line">struct A &#123;</span><br><span class="line">	shared_ptr&lt;B&gt; pb;</span><br><span class="line">&#125;;</span><br><span class="line">struct B &#123;</span><br><span class="line">	shared_ptr&lt;A&gt; pa;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;AW&gt; tA(new AW());</span><br><span class="line">shared_ptr&lt;BW&gt; tB(new BW());</span><br><span class="line">cout &lt;&lt; tA.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 2</span><br><span class="line">cout &lt;&lt; tB.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 2</span><br><span class="line">tA-&gt;pb &#x3D; tB;</span><br><span class="line">tB-&gt;pa &#x3D; tA;</span><br><span class="line">cout &lt;&lt; tA.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 2</span><br><span class="line">cout &lt;&lt; tB.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 2</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
+<p>用以上的方式操作一块内存，就会出现循环引用的问题。当<code>tA\tB</code>离开作用域时，由于<code>A\B</code>对象的内存在堆汇总分配，因此不会自动释放，同时对象内部同时存在指向对象的<code>shared_ptr</code>因此，引用为1，不会指向析构函数；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct BW;</span><br><span class="line">struct AW&#123;</span><br><span class="line">	shared_ptr&lt;BW&gt; pb;</span><br><span class="line">&#125;;</span><br><span class="line">struct BW&#123;</span><br><span class="line">	weak_ptr&lt;AW&gt; pa;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;AW&gt; tA(new AW());</span><br><span class="line">shared_ptr&lt;BW&gt; tB(new BW());</span><br><span class="line">cout &lt;&lt; tA.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 1</span><br><span class="line">cout &lt;&lt; tB.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 1</span><br><span class="line">tA-&gt;pb &#x3D; tB;</span><br><span class="line">tB-&gt;pa &#x3D; tA;</span><br><span class="line">cout &lt;&lt; tA.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 1</span><br><span class="line">cout &lt;&lt; tB.use_count() &lt;&lt; endl;                                        &#x2F;&#x2F; 2</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
+<p>如果<code>tA\tB</code>离开作用域，BW中指向A的对象为<code>weakptr</code>因此A的shared_ptr的引用为0，故该对象析构释放。同时对象内部指向<code>B</code>的share_ptr计数减一。故内存释放；</p>
+<h5 id="weak-ptr具体操作"><a href="#weak-ptr具体操作" class="headerlink" title="weak_ptr具体操作"></a>weak_ptr具体操作</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;memory&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	shared_ptr&lt;int&gt; pr(new int(10));	&#x2F;&#x2F; 需要先创建share_ptr，然后在赋值给weak_ptr</span><br><span class="line">	weak_ptr&lt;int&gt; w(pr);</span><br><span class="line">	cout &lt;&lt; &quot;与w共享的share_ptr数量&quot; &lt;&lt; w.use_count() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; pr.get() &lt;&lt; endl;</span><br><span class="line">	&#x2F;&#x2F; weak_ptr需要通过share_ptr才能操作内存对象</span><br><span class="line">	&#x2F;&#x2F; w.lock() 返回一个该内存的share_ptr，若没有expire为true，则返回空</span><br><span class="line">	w.reset();	</span><br><span class="line">	if (w.expired()) &#123;		&#x2F;&#x2F; 若w.use_count 为0，返回true，否则返回false；</span><br><span class="line">		cout &lt;&lt; &quot;w已置空&quot; &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/images/pasted-61.png" alt="upload successful"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>慕课网 C++重构</li>
+<li>C专家编程</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/08/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9B%9B%E4%B9%8B%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" rel="prev" title="操作系统四之进程管理">
+      <i class="fa fa-chevron-left"></i> 操作系统四之进程管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/11/%E5%9B%9E%E6%BA%AF%E6%B3%95%E4%B9%8B%E5%85%A8%E6%8E%92%E5%88%97/" rel="next" title="回溯法之全排列">
+      回溯法之全排列 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%80%BC%E4%B8%8E%E5%8F%B3%E5%80%BC"><span class="nav-number">1.</span> <span class="nav-text">左值与右值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E8%BF%94%E5%9B%9E%E5%80%BC%E6%98%AF%E5%B7%A6%E5%80%BC%E8%BF%98%E6%98%AF%E5%8F%B3%E5%80%BC%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">运算符返回值是左值还是右值？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const"><span class="nav-number">1.3.</span> <span class="nav-text">const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-number">1.4.</span> <span class="nav-text">函数指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%92%8C%E9%87%8E%E6%8C%87%E9%92%88"><span class="nav-number">1.5.</span> <span class="nav-text">内存泄漏和野指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">1.6.</span> <span class="nav-text">内存布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="nav-number">1.7.</span> <span class="nav-text">智能指针</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#auto-ptr%EF%BC%88%E5%B7%B2%E4%BD%9C%E5%8F%A4%EF%BC%89"><span class="nav-number">1.7.1.</span> <span class="nav-text">auto_ptr（已作古）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unique-ptr"><span class="nav-number">1.7.2.</span> <span class="nav-text">unique_ptr</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#shared-ptr"><span class="nav-number">1.7.3.</span> <span class="nav-text">shared_ptr</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#weak-ptr%E5%85%B7%E4%BD%93%E6%93%8D%E4%BD%9C"><span class="nav-number">1.7.3.1.</span> <span class="nav-text">weak_ptr具体操作</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

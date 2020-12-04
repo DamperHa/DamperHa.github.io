@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文章对const，volatile，mutable进行总结与介绍；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探究const、volatile、mutable">
+<meta property="og:url" content="http://yoursite.com/2020/06/22/%E6%8E%A2%E7%A9%B6const%E3%80%81volatile%E3%80%81mutable/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="文章对const，volatile，mutable进行总结与介绍；">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-22T03:38:00.000Z">
+<meta property="article:modified_time" content="2020-06-24T01:58:51.481Z">
+<meta property="article:author" content="范志豪">
+<meta property="article:tag" content="const">
+<meta property="article:tag" content="volatile">
+<meta property="article:tag" content="mutable">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/06/22/%E6%8E%A2%E7%A9%B6const%E3%80%81volatile%E3%80%81mutable/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>探究const、volatile、mutable | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/22/%E6%8E%A2%E7%A9%B6const%E3%80%81volatile%E3%80%81mutable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          探究const、volatile、mutable
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-22 11:38:00" itemprop="dateCreated datePublished" datetime="2020-06-22T11:38:00+08:00">2020-06-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-24 09:58:51" itemprop="dateModified" datetime="2020-06-24T09:58:51+08:00">2020-06-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">C++基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>文章对const，volatile，mutable进行总结与介绍；</p>
+<a id="more"></a>
+<h2 id="const"><a href="#const" class="headerlink" title="const"></a>const</h2><p>当给一个变量加上const修饰符后，该变量具有常量特性。这里的常量特性指的是<strong>编译过程中，编译器对该变量采用一些优化手段，从而将对应值替换变量。</strong> 它与宏定义产生的常量特性，从生命周期的角度来说，宏定义在预处理阶段具有生命力，const在运行阶段才具有。如果我们需要修改const变量的值，可以通过以下操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    const volatile int MAX_LEN &#x3D; 1024;</span><br><span class="line">    </span><br><span class="line">    auto ptr &#x3D; (int*) (&amp;MAX_LEN);</span><br><span class="line">    *ptr &#x3D; 2018;</span><br><span class="line">    cout &lt;&lt; MAX_LEN &lt;&lt; endl;	&#x2F;&#x2F; 输出2018</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上述之所以能够通过指针修饰const对象，是因为<strong>volatile</strong>。</p>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>volatile的作用是在编译过程中，告诉编译器，对于const变量，不需要采用优化手段，因此对应的变量值也就没有用具体数值替代。而是和一般变量一样，从内存取值，因此以上输出的是2048；</p>
+<h2 id="mutable"><a href="#mutable" class="headerlink" title="mutable"></a>mutable</h2><p>对于内置类型来说，加上const，我们就不能修改对应变量的数值了。这是一个单一变量，所以无所谓。但是对于一个类对象来说，这个const对象可能包含多个<strong>成员变量</strong>。必要时候，我们可能需要修改其中的成员数据，因此mutable就是针对与这种情况产生的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">class Demo&#123;</span><br><span class="line">public:</span><br><span class="line">    Demo():i(0)&#123;&#125;</span><br><span class="line">    int func()&#123;return i;&#125; </span><br><span class="line">    int func() const &#123;return i+1;&#125;</span><br><span class="line">    mutable int i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    Demo demo;</span><br><span class="line">    const Demo demo1;</span><br><span class="line"></span><br><span class="line">    demo.i &#x3D; 8;</span><br><span class="line">    std::cout &lt;&lt; demo.i &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    demo1.i &#x3D; 10;</span><br><span class="line">    std::cout &lt;&lt; demo1.i &lt;&lt; endl;	&#x2F;&#x2F; 虽然为const对象，仍然可以修改i值</span><br><span class="line">&#125;</span><br><span class="line">                    </span><br></pre></td></tr></table></figure>
+<p>以下为mutable几点注意：</p>
+<ul>
+<li>   只能用于类中的成员数据；</li>
+<li>可通过const 类对象，修改mutable成员数据；</li>
+<li>可在类中const成员函数修改mutable数据；</li>
+</ul>
+<h2 id="const其他应用"><a href="#const其他应用" class="headerlink" title="const其他应用"></a>const其他应用</h2><h3 id="底层与顶层cosnt"><a href="#底层与顶层cosnt" class="headerlink" title="底层与顶层cosnt"></a>底层与顶层cosnt</h3><p>顶层const修饰对象本身，对于顶层const和常规变量一样操作。如下，所有操作均ok；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int a &#x3D; 4;</span><br><span class="line">const int b &#x3D; a;</span><br><span class="line">int c &#x3D; b;</span><br><span class="line"></span><br><span class="line">int const *p &#x3D; &amp;al</span><br><span class="line">int* p1 &#x3D; p;&#x2F;&#x2F; OK</span><br></pre></td></tr></table></figure>
+<p>但是对于底层cosnt，需要一些注意事项，看以下例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 0;</span><br><span class="line">const int c &#x3D; 42;</span><br><span class="line">const int* p &#x3D; &amp;c;	&#x2F;&#x2F; 具有相同底层const，成立</span><br><span class="line">p &#x3D; &amp;c;			&#x2F;&#x2F; OK</span><br><span class="line">p &#x3D; &amp;i; &#x2F;&#x2F; ok, 非底层cosnt 可转为底层cosnt</span><br><span class="line">const int&amp; r &#x3D; i;	&#x2F;&#x2F; const int temp &#x3D; i; cosnt int&amp; r &#x3D; temp; OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="const类对象只能调用const成员函数"><a href="#const类对象只能调用const成员函数" class="headerlink" title="const类对象只能调用const成员函数"></a>const类对象只能调用const成员函数</h3><p>看以下例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Complex</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	int real()&#123;return re;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">complex c1;</span><br><span class="line">const complex c2;</span><br><span class="line"></span><br><span class="line">c1.real() &#x2F;&#x2F;OK</span><br><span class="line">c2.real() &#x2F;&#x2F;Error</span><br></pre></td></tr></table></figure>
+<p>上述表明，const类对象只能调用cosnt成员函数，原因如下：类对象调用成员函数时，均隐性传递了<code>this</code>指针。当为cosnt类对象时，传递的this指针为<code>const Complex*</code>。而const成员函数的第一个形参为：<code>const compelx*</code>,因此不会出错。但是非const成员函数的第一个参数为<code>compelx*</code>,由第一部分可知，底层const不一致，不能将const对象，赋值给非const对象；</p>
+<h3 id="const是否为函数签名？"><a href="#const是否为函数签名？" class="headerlink" title="const是否为函数签名？"></a>const是否为函数签名？</h3><p>函数签名包含：函数名，参数个数, 参数类型，参数顺序。这是我理解的函数签名，其实对于新参是const变量，还是非const变量，也被签名所考虑。只是这里的const<strong>一定是底层cosnt</strong>。 而且const函数与非const函数可以并存，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">class Demo&#123;</span><br><span class="line">public:</span><br><span class="line">    Demo():i(0)&#123;&#125;</span><br><span class="line">    int func()&#123;return i;&#125; </span><br><span class="line">    int func() const &#123;return i+1;&#125;</span><br><span class="line">    mutable int i;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int func1(int* p)&#123;std::cout &lt;&lt; &quot;No const&quot; &lt;&lt; std::endl;&#125;</span><br><span class="line">int func1(const int* p)&#123;std::cout &lt;&lt; &quot;const&quot; &lt;&lt; std::endl;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    Demo demo;</span><br><span class="line">    std::cout &lt;&lt; demo.func() &lt;&lt; endl;	&#x2F;&#x2F; Out：0</span><br><span class="line"></span><br><span class="line">    const Demo demo1;</span><br><span class="line">    std::cout &lt;&lt; demo1.func() &lt;&lt; endl;		&#x2F;&#x2F; Out: 1</span><br><span class="line"></span><br><span class="line">    int a &#x3D; 3;</span><br><span class="line">    const int *p &#x3D; &amp;a; </span><br><span class="line"></span><br><span class="line">    func1(&amp;a);		&#x2F;&#x2F; Out: No const</span><br><span class="line">    func1(p);		&#x2F;&#x2F; Ouu：const</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>const 形参</li>
+<li>const 成员函数</li>
+<li>const 全局函数</li>
+<li>cosnt 变量</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>罗剑锋C++实战笔记</li>
+<li>候捷C++视频下</li>
+<li>C++ premer</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/const/" rel="tag"># const</a>
+              <a href="/tags/volatile/" rel="tag"># volatile</a>
+              <a href="/tags/mutable/" rel="tag"># mutable</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/15/GNU%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="prev" title="GNU基础知识">
+      <i class="fa fa-chevron-left"></i> GNU基础知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/22/class/" rel="next" title="探究 enum class">
+      探究 enum class <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#const"><span class="nav-number">1.</span> <span class="nav-text">const</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile"><span class="nav-number">2.</span> <span class="nav-text">volatile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mutable"><span class="nav-number">3.</span> <span class="nav-text">mutable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#const%E5%85%B6%E4%BB%96%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">const其他应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E4%B8%8E%E9%A1%B6%E5%B1%82cosnt"><span class="nav-number">4.1.</span> <span class="nav-text">底层与顶层cosnt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const%E7%B1%BB%E5%AF%B9%E8%B1%A1%E5%8F%AA%E8%83%BD%E8%B0%83%E7%94%A8const%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number">4.2.</span> <span class="nav-text">const类对象只能调用const成员函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const%E6%98%AF%E5%90%A6%E4%B8%BA%E5%87%BD%E6%95%B0%E7%AD%BE%E5%90%8D%EF%BC%9F"><span class="nav-number">4.3.</span> <span class="nav-text">const是否为函数签名？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

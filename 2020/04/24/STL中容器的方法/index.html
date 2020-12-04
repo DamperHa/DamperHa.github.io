@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这篇文章主要汇总STL中容器的常用方法 容器介绍 顺序容器    可变长动态数组vector 双端队列deque 双向链表list   关联容器 set multiset map multimap   适配器 栈 stack 队列 queue 优先队列 priority_queue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL中容器的方法">
+<meta property="og:url" content="http://yoursite.com/2020/04/24/STL%E4%B8%AD%E5%AE%B9%E5%99%A8%E7%9A%84%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="这篇文章主要汇总STL中容器的常用方法 容器介绍 顺序容器    可变长动态数组vector 双端队列deque 双向链表list   关联容器 set multiset map multimap   适配器 栈 stack 队列 queue 优先队列 priority_queue">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/pasted-10.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-11.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-13.png">
+<meta property="article:published_time" content="2020-04-24T00:50:00.000Z">
+<meta property="article:modified_time" content="2020-04-26T10:35:24.877Z">
+<meta property="article:author" content="范志豪">
+<meta property="article:tag" content="STL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-10.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/24/STL%E4%B8%AD%E5%AE%B9%E5%99%A8%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>STL中容器的方法 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/24/STL%E4%B8%AD%E5%AE%B9%E5%99%A8%E7%9A%84%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STL中容器的方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-24 08:50:00" itemprop="dateCreated datePublished" datetime="2020-04-24T08:50:00+08:00">2020-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-26 18:35:24" itemprop="dateModified" datetime="2020-04-26T18:35:24+08:00">2020-04-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章主要汇总STL中容器的常用方法</p>
+<h3 id="容器介绍"><a href="#容器介绍" class="headerlink" title="容器介绍"></a>容器介绍</h3><ul>
+<li>顺序容器<ul>
+<li>   可变长动态数组vector</li>
+<li>双端队列deque</li>
+<li>双向链表list</li>
+</ul>
+</li>
+<li>关联容器<ul>
+<li>set</li>
+<li>multiset</li>
+<li>map</li>
+<li>multimap</li>
+</ul>
+</li>
+<li>适配器<ul>
+<li>栈 stack</li>
+<li>队列 queue</li>
+<li>优先队列 priority_queue<a id="more"></a>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="所有容器拥有的成员函数"><a href="#所有容器拥有的成员函数" class="headerlink" title="所有容器拥有的成员函数"></a>所有容器拥有的成员函数</h3><ul>
+<li>size():返回容器对象中元素个数</li>
+<li>empty():判断容器对象是否为空</li>
+</ul>
+<h3 id="顺序容器和关联容器都拥有的成员函数"><a href="#顺序容器和关联容器都拥有的成员函数" class="headerlink" title="顺序容器和关联容器都拥有的成员函数"></a>顺序容器和关联容器都拥有的成员函数</h3><ul>
+<li>begin(): 返回指向容器中的第一个迭代器</li>
+<li>end() : 返回容器中最后一个元素后面的迭代器</li>
+<li>rbegin()：指向容器最后一个元素的反向迭代器</li>
+<li>rend():指向第一个元素前面的反向迭代器</li>
+<li>erase(): 从容器中删除一个元素，或几个元素</li>
+<li>clear(): 容器中删除所有元素</li>
+</ul>
+<h3 id="顺序容器都拥有的成员函数"><a href="#顺序容器都拥有的成员函数" class="headerlink" title="顺序容器都拥有的成员函数"></a>顺序容器都拥有的成员函数</h3><ul>
+<li>front() : 返回容器中第一个元素的引用</li>
+<li>back(): 返回容器最后一个元素的引用</li>
+<li>push_back(): 在容器末尾插入元素</li>
+<li>pop_back():删除元素末尾的元素</li>
+<li>insert() : 插入一个或多个元素</li>
+</ul>
+<h2 id="vector成员函数"><a href="#vector成员函数" class="headerlink" title="vector成员函数"></a>vector成员函数</h2><h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p><code>vector&lt;T&gt;</code>这个类中有四个构造函数的重载：</p>
+<ul>
+<li><code>vector()</code>: 无参数构造函数，将容器初始化为空</li>
+<li><code>vector（int n）</code>: 将容器初始有n个元素</li>
+<li><code>vector(int n, const T&amp; val)</code>: 容器中包含n个val</li>
+<li><code>vactor(iterator first, iterator last)</code>: 利用迭代区间<code>[first, last)</code>初始化vector</li>
+</ul>
+<h4 id="insert-amp-erase"><a href="#insert-amp-erase" class="headerlink" title="insert&amp;erase"></a>insert&amp;erase</h4><p>这两个函数均有重载函数：作用于单个迭代器 + 某个迭代器区间</p>
+<p>单个迭代器：</p>
+<ul>
+<li><code>inset(iterator i , const T&amp; val)</code>    </li>
+<li><code>erase(iterator i)</code></li>
+</ul>
+<p>多个迭代器</p>
+<ul>
+<li><code>insert(iterator i, iterator first, iterator last)</code></li>
+<li><code>erase(iterator first, iterator last)</code></li>
+</ul>
+<p><code>void swap(vector&lt;T&gt;&amp; v)</code>: 将容器自身的内容和另一同类型的容器内容v互换；</p>
+<h2 id="list"><a href="#list" class="headerlink" title="list"></a>list</h2><p>list容器和vector容器在成员函数最大的区别是：list可以在头部进行插入删除操作：</p>
+<ul>
+<li><code>void push_back(const T&amp; val)</code>: 将<code>val</code>插入最前面；</li>
+<li><code>void pop_front()</code>: 删除链表最前面的元素</li>
+<li><code>void sort()</code>: 将链表从小到大排序</li>
+<li><code>void remove(const T&amp; val)</code>: 删除和val相等的元素</li>
+<li>remove_if(): 删除某些复合条件的元素</li>
+<li>unique()</li>
+<li>merger</li>
+<li>splice<br>list中没有<code>sort</code>函数，因为sort需要随机迭代器的支持，但是list是双向迭代器；</li>
+</ul>
+<h2 id="deuqe"><a href="#deuqe" class="headerlink" title="deuqe"></a>deuqe</h2><p>所有使用与vector的操作均使用于deque，由于deque支持双端操作，因此多了以下几个成员函数：</p>
+<ul>
+<li><code>void push_front(const T&amp; val)</code> // 将val插入容器的头部</li>
+<li>void pop_front() // 删除容器的头部</li>
+</ul>
+<h2 id="multiset"><a href="#multiset" class="headerlink" title="multiset"></a>multiset</h2><p>定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class Key, class Pred&#x3D;less&lt;Key&gt;, class A&#x3D; allocator&lt;T&gt;&gt;</span><br><span class="line">class map&#123;</span><br><span class="line">	typedef pair&lt;const Key, T&gt; value_type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/pasted-10.png" alt="upload successful"></p>
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>multiset拥有的成员函数，set均有。由于set不能有重复元素，因此<code>insert</code>有区别；<br>函数原型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pair&lt;iterator, bool&gt; insert(const T&amp; val);</span><br></pre></td></tr></table></figure>
+<p>假设返回的pair对象为x，如果插入成功<code>x.second</code>为true, <code>x.first</code>指向被插入元素的迭代器。如果插入失败，<code>x.second</code>为false，<code>x.first</code>指向原来那个元素的迭代器；</p>
+<h2 id="multimap"><a href="#multimap" class="headerlink" title="multimap"></a>multimap</h2><p>定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class Key, class T, class Pred&#x3D;less&lt;Key&gt;, class A&#x3D; allocator&lt;T&gt;&gt;</span><br><span class="line">class map&#123;</span><br><span class="line">	typedef pair&lt;const Key, T&gt; value_type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>multimap中的元素是pair模板类对象。元素的<code>first</code>为关键字，<code>second</code>为值；其中元素按关键字大小排列；注意，map和multimap中的<code>find</code>和<code>count</code>不用<code>==</code>运算符比较是否相等。而是通过<code>x&lt;y</code>和<code>y&lt;x</code>同时为假，来认定y和x相等；</p>
+<p><img src="/images/pasted-11.png" alt="upload successful"></p>
+<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><p>定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class Key, class T, class Pred&#x3D;less&lt;Key&gt;, class A&#x3D; allocator&lt;T&gt;&gt;</span><br><span class="line">class map&#123;</span><br><span class="line">	typedef pair&lt;const Key, T&gt; value_type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>multimap有的成员函数，map都有。于此之外，还有operator[]:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">T&amp; operator[](Key k);</span><br></pre></td></tr></table></figure>
+<p>也就是通过下标操作访问val，如果存在返回该值，如果不在添加一个first为k的值；</p>
+<h2 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h2><p>适配器有stack，queue，priority_queue三种。他们都是在顺序容器基础上实现的，屏蔽和加强一部分功能；<br>适配器都有以下三个成员函数：</p>
+<ul>
+<li>push:添加一个元素；</li>
+<li>top:返回栈顶，对头元素的引用 （修改：对于queue，应该使用front()）</li>
+<li>pop: 删除一个元素<br>迭代器是容器和算法之间的桥梁，由于适配器没有迭代器，因此，STL中的算法不适应容器适配器；</li>
+</ul>
+<h3 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h3><p>定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T, class Cont&#x3D;deque&lt;T&gt;&gt;</span><br><span class="line">class stack&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>stack默认以deque实现，也可指定用vector和list实现；<br><img src="/images/pasted-13.png" alt="upload successful"></p>
+<h3 id="queue"><a href="#queue" class="headerlink" title="queue"></a>queue</h3><p>定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T, class Cont&#x3D;deque&lt;T&gt;&gt;</span><br><span class="line">class queue&#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>queue默认deque实行，可指定list实现<br>push在队尾，pop在对头，而stack全部操作在栈顶；</p>
+<h3 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a>priority_queue</h3><p>定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">template&lt;class T, class Container&#x3D;vector&lt;T&gt;, class Compare &#x3D; less&lt;T&gt;&gt;</span><br><span class="line">class priority_queue</span><br><span class="line">&#123;</span><br><span class="line">...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第二个参数：指定由什么实现，默认为vector，可指定为queue；</li>
+<li>第三个参数：元素的比较方法，默认为大堆。可指定为小堆，greater<T></li>
+</ul>
+<p>参考地址：<br><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/393.html">http://c.biancheng.net/view/393.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/STL/" rel="tag"># STL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/23/%E7%AE%97%E6%B3%95%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8/" rel="prev" title="剑指6offer翻转链表">
+      <i class="fa fa-chevron-left"></i> 剑指6offer翻转链表
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/25/124%E4%BA%8C%E5%8F%89%E6%A0%91%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84/" rel="next" title="124二叉树最大路径">
+      124二叉树最大路径 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">容器介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E5%AE%B9%E5%99%A8%E6%8B%A5%E6%9C%89%E7%9A%84%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">所有容器拥有的成员函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8%E5%92%8C%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8%E9%83%BD%E6%8B%A5%E6%9C%89%E7%9A%84%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">顺序容器和关联容器都拥有的成员函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8%E9%83%BD%E6%8B%A5%E6%9C%89%E7%9A%84%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">顺序容器都拥有的成员函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vector%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number"></span> <span class="nav-text">vector成员函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">0.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#insert-amp-erase"><span class="nav-number">0.2.</span> <span class="nav-text">insert&amp;erase</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#list"><span class="nav-number"></span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deuqe"><span class="nav-number"></span> <span class="nav-text">deuqe</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multiset"><span class="nav-number"></span> <span class="nav-text">multiset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#set"><span class="nav-number"></span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multimap"><span class="nav-number"></span> <span class="nav-text">multimap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#map"><span class="nav-number"></span> <span class="nav-text">map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number"></span> <span class="nav-text">适配器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stack"><span class="nav-number">1.</span> <span class="nav-text">stack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#queue"><span class="nav-number">2.</span> <span class="nav-text">queue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#priority-queue"><span class="nav-number">3.</span> <span class="nav-text">priority_queue</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

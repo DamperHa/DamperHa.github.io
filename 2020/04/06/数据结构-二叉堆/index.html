@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="二叉堆 二叉堆是一个完全二叉树，因此可以通过数组表示，注意，序号0留空，根节点从数组中序号1开始； 二叉堆主要两个应用：一种排序方式，一种优先队列； 二叉堆有最大堆和最小堆两种形式，最大堆，父节点&gt;&#x3D;子节点；最小堆，父节点&lt;&#x3D;子节点；  本文重点是实现优先队列，优先队列在计算机中非常常见。比如进程的调度策略，进程的调度策略用到了队列，对于普通队列，先到先执行，但是，我们希望进程执行时间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构-二叉堆">
+<meta property="og:url" content="http://yoursite.com/2020/04/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E4%BA%8C%E5%8F%89%E5%A0%86/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="二叉堆 二叉堆是一个完全二叉树，因此可以通过数组表示，注意，序号0留空，根节点从数组中序号1开始； 二叉堆主要两个应用：一种排序方式，一种优先队列； 二叉堆有最大堆和最小堆两种形式，最大堆，父节点&gt;&#x3D;子节点；最小堆，父节点&lt;&#x3D;子节点；  本文重点是实现优先队列，优先队列在计算机中非常常见。比如进程的调度策略，进程的调度策略用到了队列，对于普通队列，先到先执行，但是，我们希望进程执行时间">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/pasted-0.png">
+<meta property="article:published_time" content="2020-04-06T12:09:00.000Z">
+<meta property="article:modified_time" content="2020-04-06T12:43:18.863Z">
+<meta property="article:author" content="范志豪">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-0.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E4%BA%8C%E5%8F%89%E5%A0%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>数据结构-二叉堆 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E4%BA%8C%E5%8F%89%E5%A0%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构-二叉堆
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-04-06 20:09:00 / Modified: 20:43:18" itemprop="dateCreated datePublished" datetime="2020-04-06T20:09:00+08:00">2020-04-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="二叉堆"><a href="#二叉堆" class="headerlink" title="二叉堆"></a>二叉堆</h2><ul>
+<li>二叉堆是一个完全二叉树，因此可以通过<strong>数组</strong>表示，注意，序号0留空，根节点从数组中序号1开始；</li>
+<li>二叉堆主要两个应用：一种排序方式，一种优先队列；</li>
+<li>二叉堆有最大堆和最小堆两种形式，最大堆，父节点&gt;=子节点；最小堆，父节点&lt;=子节点；</li>
+</ul>
+<p>本文重点是实现优先队列，优先队列在计算机中非常常见。比如进程的调度策略，进程的调度策略用到了队列，对于普通队列，先到先执行，但是，我们希望进程执行时间短的具有较高的优先级，这里，我们就可以用到优先队列（有序，先到先执行）</p>
+<a id="more"></a>
+
+<h3 id="父子关系"><a href="#父子关系" class="headerlink" title="父子关系"></a>父子关系</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 父亲节点</span><br><span class="line">int parent(int root)</span><br><span class="line">    return root &#x2F; 2;	&#x2F;&#x2F; 子节点序号 &#x2F; 2 &#x3D; 父节点序号</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 左儿子</span><br><span class="line">int left(int parent)</span><br><span class="line">    return 2*parent;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 右儿子</span><br><span class="line">int right(int parent)</span><br><span class="line">    return 2*parent + 1;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优先队列API"><a href="#优先队列API" class="headerlink" title="优先队列API"></a>优先队列API</h3><p>优先队列最主要的两个API是插入一个数<code>insert</code>，删除一个数<code>delMin</code>，这里我们以最小堆为列；<br>以下介绍实现这两API具体操作：</p>
+<ul>
+<li>insert:  在二叉堆末尾添加一个元素，然后按照父节点&lt;子节点的方式上浮<code>swim</code>；</li>
+</ul>
+<ul>
+<li>delMin:二叉堆的首元素与最末尾元素互换，然后删掉末尾元素，更新后的首元素按照父节点&lt;子节点的方式下沉<code>sink</code>;</li>
+</ul>
+<h3 id="优先队列头文件"><a href="#优先队列头文件" class="headerlink" title="优先队列头文件"></a>优先队列头文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">template&lt;typename T&gt;</span><br><span class="line">class BinaryHeap </span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	explicit BinaryHeap(int capacity &#x3D; 100) :array(capacity), currentSize(0) &#123;&#125;</span><br><span class="line">	explicit BinaryHeap(const vector&lt;T&gt;&amp; items);</span><br><span class="line"></span><br><span class="line">	bool isEmpty() const;		&#x2F;&#x2F; 判断二叉堆是否为空 </span><br><span class="line">	const T&amp; findMin() const;	&#x2F;&#x2F; 查找最小元素</span><br><span class="line"></span><br><span class="line">	void insert(const T&amp; x);	&#x2F;&#x2F; 插入元素x</span><br><span class="line">	void deleteMin();			&#x2F;&#x2F; 删除最小元素</span><br><span class="line">	void deleteMin(T&amp; minItem);	&#x2F;&#x2F; 删除最小元素，并以引用返回</span><br><span class="line">	void makeEmpty();			&#x2F;&#x2F; 清空二叉堆</span><br><span class="line">	void print() const;			&#x2F;&#x2F; 打印该堆元素</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	vector&lt;T&gt; array;			&#x2F;&#x2F; 存储二叉堆的节点</span><br><span class="line">	int currentSize;			&#x2F;&#x2F; 当前二叉堆中的节点数目</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">	void bulidHeap();				&#x2F;&#x2F; 将元素移到合适位置</span><br><span class="line">	void sink(int hole);		&#x2F;&#x2F; 下沉</span><br><span class="line">	void swim(int hole);		&#x2F;&#x2F; 上浮</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>注意： explicit关键字的作用就是防止类构造函数的隐式自动转换.</p>
+<h3 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**********************************</span><br><span class="line">* 函数名称：print() const</span><br><span class="line">* 功能描述： 打印堆元素</span><br><span class="line">* 参数列表：无</span><br><span class="line">* 返回结果： void</span><br><span class="line">***********************************&#x2F;</span><br><span class="line"></span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::print()const</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; &quot;二叉堆的元素：&quot; &lt;&lt; endl;</span><br><span class="line">	for (int i &#x3D; 1; i &lt;&#x3D; currentSize; ++i)</span><br><span class="line">		cout &lt;&lt; array[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">	cout &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;************************************</span><br><span class="line">* 函数名称： isEmpty()</span><br><span class="line">* 功能介绍： 判断二叉堆是否为空</span><br><span class="line">* 参数列表：无</span><br><span class="line">* 返回结果：true，false</span><br><span class="line">*************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">bool BinaryHeap&lt;T&gt;::isEmpty() const</span><br><span class="line">&#123;</span><br><span class="line">	return currentSize &#x3D;&#x3D; 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;************************************</span><br><span class="line">* 函数名称： makeEmpty()</span><br><span class="line">* 功能描述： 清空二叉堆</span><br><span class="line">* 参数列表： 无</span><br><span class="line">* 返回结果：void</span><br><span class="line">**************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::makeEmpty()</span><br><span class="line">&#123;</span><br><span class="line">	currentSize &#x3D; 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;*************************************</span><br><span class="line">* 功能描述：构造函数</span><br><span class="line">*  参数列表：items是构造二叉堆需要的数据</span><br><span class="line">*************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">BinaryHeap&lt;T&gt;::BinaryHeap(const vector&lt;T&gt;&amp; items) :array(items.size() + 1), currentSize(items.size())</span><br><span class="line">&#123;</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; items.size(); ++i)</span><br><span class="line">		array[i + 1] &#x3D; items[i];</span><br><span class="line"></span><br><span class="line">	bulidHeap();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;*************************************</span><br><span class="line">* 函数名称：buildHeap()</span><br><span class="line">* 功能描述：将元素移动到合适的位置，满足堆序</span><br><span class="line">* 参数列表：无</span><br><span class="line">* 返回结果：void</span><br><span class="line">**************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::bulidHeap()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i &#x3D; currentSize &#x2F; 2; i &gt; 0; --i)</span><br><span class="line">		sink(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;**************************************</span><br><span class="line">* 函数名称： sink(int hole)</span><br><span class="line">* 功能描述：将array[hole]处的值下沉到合适位置</span><br><span class="line">* 参数列表：hole为堆中元素的下标序号</span><br><span class="line">* 返回结果：void</span><br><span class="line">***************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::sink(int  hole)</span><br><span class="line">&#123;</span><br><span class="line">	&#x2F;&#x2F; 如果沉到堆底，就没有办法再下沉</span><br><span class="line">	while (2 * hole &lt;&#x3D; currentSize) &#123;</span><br><span class="line">		int older &#x3D; 2 * hole;	&#x2F;&#x2F; older 记录孩子节点较小数</span><br><span class="line">		if (2 * hole +1 &lt; currentSize &amp;&amp; array[2 * hole] &gt; array[2 * hole + 1])</span><br><span class="line">			older &#x3D; 2 * hole + 1;</span><br><span class="line">		if (array[hole] &lt;&#x3D; array[older])</span><br><span class="line">			break;</span><br><span class="line">		int temp &#x3D; array[older];</span><br><span class="line">		array[older] &#x3D; array[hole];</span><br><span class="line">		array[hole] &#x3D; temp;</span><br><span class="line"></span><br><span class="line">		hole &#x3D; older;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x2F;*****************************************</span><br><span class="line">* 函数名称： deleteMin(T&amp; minItem)</span><br><span class="line">* 功能介绍： 删除最小元素</span><br><span class="line">* 参数列表： 最小元素的引用</span><br><span class="line">* 返回结果：void</span><br><span class="line">******************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::deleteMin(T&amp; minItem)</span><br><span class="line">&#123;</span><br><span class="line">	if (isEmpty()) &#123;</span><br><span class="line">		cout &lt;&lt; &quot;binary is empty.&quot; &lt;&lt; endl;</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line">	&#x2F;&#x2F; 第一个元素和最后一个元素互换，然后下沉第一个</span><br><span class="line">	minItem &#x3D; array[1];</span><br><span class="line">	array[1] &#x3D; array[currentSize--];&#x2F;&#x2F; 二叉堆删除一个元素</span><br><span class="line">	sink(1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::deleteMin()</span><br><span class="line">&#123;</span><br><span class="line">	if (isEmpty()) &#123;</span><br><span class="line">		cout &lt;&lt; &quot;binary is empty.&quot; &lt;&lt; endl;</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line">	array[1] &#x3D; array[currentSize];</span><br><span class="line">	currentSize--;</span><br><span class="line">	sink(1);</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;**********************************************</span><br><span class="line">* 函数名字： const T&amp; findMin() const</span><br><span class="line">* 函数功能： 返回堆的最小值</span><br><span class="line">* 函数参数：无</span><br><span class="line">* 返回结果：返回最小值引用</span><br><span class="line">***********************************************&#x2F;</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">const T&amp; BinaryHeap&lt;T&gt;::findMin() const</span><br><span class="line">&#123;</span><br><span class="line">	return array[1];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; swim(hole) 上浮</span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::swim(int hole)</span><br><span class="line">&#123;</span><br><span class="line">	while (hole &gt; 1 &amp;&amp; array[hole &#x2F; 2] &gt; array[hole]) &#123;</span><br><span class="line">		T temp &#x3D; array[hole &#x2F; 2];</span><br><span class="line">		array[hole &#x2F; 2] &#x3D; array[hole];</span><br><span class="line">		array[hole] &#x3D; temp;</span><br><span class="line">		hole &#x2F;&#x3D; 2;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">template&lt;typename T&gt;</span><br><span class="line">void BinaryHeap&lt;T&gt;::insert(const T&amp; x)</span><br><span class="line">&#123;</span><br><span class="line">	if (currentSize &#x3D;&#x3D; array.size()-1)</span><br><span class="line">		array.resize(2 * array.size());</span><br><span class="line"></span><br><span class="line">	&#x2F;&#x2F; 获取空值</span><br><span class="line">	int hole &#x3D; ++currentSize;</span><br><span class="line">	&#x2F;&#x2F;cout &lt;&lt; array.size() &lt;&lt; endl;</span><br><span class="line">	array[hole] &#x3D; x;</span><br><span class="line">	swim(hole);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;priorty_queue.h&quot;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line">#include&lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	srand(unsigned(time(0)));</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	vector&lt;int&gt; v;</span><br><span class="line"></span><br><span class="line">	for (int i &#x3D; 0; i &lt; 10; ++i)</span><br><span class="line">		v.push_back(rand()%10);</span><br><span class="line">	cout &lt;&lt; &quot;v:&quot;;</span><br><span class="line">	for (int i &#x3D; 0; i &lt; 10; ++i)</span><br><span class="line">		cout &lt;&lt; v[i] &lt;&lt; &quot; &quot;;</span><br><span class="line">	cout &lt;&lt; endl;</span><br><span class="line">	BinaryHeap&lt;int&gt; binaryHeap(v);</span><br><span class="line"></span><br><span class="line">	binaryHeap.print();</span><br><span class="line"></span><br><span class="line">	binaryHeap.insert(4);</span><br><span class="line">	cout &lt;&lt; &quot;插入元素4&quot; &lt;&lt; endl;</span><br><span class="line">	binaryHeap.print();</span><br><span class="line"></span><br><span class="line">	cout &lt;&lt; &quot;删除元素&quot; &lt;&lt; endl;</span><br><span class="line">	binaryHeap.deleteMin();</span><br><span class="line">	binaryHeap.print();</span><br><span class="line"></span><br><span class="line">	cout &lt;&lt; &quot;删除元素第二种：&quot; &lt;&lt; endl;</span><br><span class="line">	int minVal &#x3D; 0;</span><br><span class="line">	binaryHeap.deleteMin(minVal);</span><br><span class="line">	cout &lt;&lt; minVal &lt;&lt; endl;</span><br><span class="line">	binaryHeap.print();</span><br><span class="line"></span><br><span class="line">	cout &lt;&lt; binaryHeap.array.size() &lt;&lt; &quot;  &quot; &lt;&lt; binaryHeap.currentSize &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p><img src="/images/pasted-0.png" alt="upload successful"></p>
+<h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/Linux_ever/article/details/51152362">https://blog.csdn.net/Linux_ever/article/details/51152362</a></li>
+<li>labuladong算法小抄</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/04/%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" rel="prev" title="算法——-二分查找">
+      <i class="fa fa-chevron-left"></i> 算法——-二分查找
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/06/C-%E9%94%99%E8%AF%AF%E6%B1%87%E6%80%BB/" rel="next" title="C++错误汇总">
+      C++错误汇总 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E5%A0%86"><span class="nav-number">1.</span> <span class="nav-text">二叉堆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%88%B6%E5%AD%90%E5%85%B3%E7%B3%BB"><span class="nav-number">1.1.</span> <span class="nav-text">父子关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97API"><span class="nav-number">1.2.</span> <span class="nav-text">优先队列API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">优先队列头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89"><span class="nav-number">1.4.</span> <span class="nav-text">函数定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">1.5.</span> <span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">1.6.</span> <span class="nav-text">测试结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="nav-number">1.7.</span> <span class="nav-text">参考链接：</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

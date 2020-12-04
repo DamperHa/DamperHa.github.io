@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文章介绍左值、右值、移动语义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探究左值、右值、移动语义">
+<meta property="og:url" content="http://yoursite.com/2020/06/24/%E6%8E%A2%E7%A9%B6%E5%B7%A6%E5%80%BC%E3%80%81%E5%8F%B3%E5%80%BC%E3%80%81%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="文章介绍左值、右值、移动语义">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/0network/0%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8Bdraw.png">
+<meta property="article:published_time" content="2020-06-24T01:56:00.000Z">
+<meta property="article:modified_time" content="2020-07-06T09:15:40.658Z">
+<meta property="article:author" content="范志豪">
+<meta property="article:tag" content="左值">
+<meta property="article:tag" content="右值">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/0network/0%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8Bdraw.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/06/24/%E6%8E%A2%E7%A9%B6%E5%B7%A6%E5%80%BC%E3%80%81%E5%8F%B3%E5%80%BC%E3%80%81%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>探究左值、右值、移动语义 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/24/%E6%8E%A2%E7%A9%B6%E5%B7%A6%E5%80%BC%E3%80%81%E5%8F%B3%E5%80%BC%E3%80%81%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          探究左值、右值、移动语义
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-06-24 09:56:00" itemprop="dateCreated datePublished" datetime="2020-06-24T09:56:00+08:00">2020-06-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-06 17:15:40" itemprop="dateModified" datetime="2020-07-06T17:15:40+08:00">2020-07-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">C++基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>文章介绍左值、右值、移动语义</p>
+<a id="more"></a>
+<h2 id="左值右值定义"><a href="#左值右值定义" class="headerlink" title="左值右值定义"></a>左值右值定义</h2><p>对左值右值的理解，一直停留在<strong>左值能放到赋值左边，右值只能放到赋值语句的右边</strong>。这是对的，却没有明白左值右值的所以然。除了以上那条外，左值与右值的区别还有以下两条：</p>
+<ul>
+<li>生命周期。左值生命周期较长，如局部，全局变量，而右值生命周期较短，如临时变量。</li>
+<li>是否能取地址。</li>
+</ul>
+<p><img src="/images/0network/0%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8Bdraw.png" alt="upload successful"><br>来看下以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 10; &#x2F;&#x2F; 10，除了运行时寄存器地址外，没有内存地址的，因此为右值，位于赋值右边，合法</span><br><span class="line">int* j &#x3D; &amp;i; &#x2F;&#x2F; i是左值，有固定地址，因此能够取地址， 合法</span><br><span class="line">int&amp; z &#x3D; 10; &#x2F;&#x2F; 左值引用是内存变量的一个别名，因此需要具有内存地址，因此，不合法</span><br><span class="line">10 &#x3D; i； &#x2F;&#x2F; 右值不可放在赋值左边， 不合法</span><br></pre></td></tr></table></figure>
+<p>可能对于以下代码，会有些疑问：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const int&amp; i &#x3D; 10;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 其实以上执行过程中，编译器产生了一个临时变量</span><br><span class="line">int j &#x3D; 10;</span><br><span class="line">const int&amp; i &#x3D; j;</span><br><span class="line">&#x2F;&#x2F; 这种转化在底层const又出现过：</span><br><span class="line">double j &#x3D; 10.9;</span><br><span class="line">const int i &#x3D; j;</span><br><span class="line">&#x2F;&#x2F; 这时编译器也定义有临时变量</span><br><span class="line">double j &#x3D; 10.9;</span><br><span class="line">const int temp &#x3D; 10;</span><br><span class="line">const int&amp; i &#x3D; temp;</span><br></pre></td></tr></table></figure>
+<p>为什么<code>const</code>引用能绑定到常量，我的理解是，我们不能够通过const变量修改字符，那么编译器认为，此时隐性创建一个变量，const绑定到该变量上也无所谓；<br>有一点需要注意，除字符常量外，其他的常量字符不可取指针，也就是说：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const char* p &#x3D; &quot;FANZHIHao&quot; &#x2F;&#x2F;ok，左值</span><br><span class="line">const int* p1 &#x3D; 10 &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+<h2 id="返回值为左值右值"><a href="#返回值为左值右值" class="headerlink" title="返回值为左值右值"></a>返回值为左值右值</h2><p>看下一下两个函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int func1()&#123;return 8;&#125;</span><br><span class="line"></span><br><span class="line">int&amp; func2(int&amp; global)&#123;return global;&#125;</span><br><span class="line"></span><br><span class="line">func1() &#x3D; 9; &#x2F;&#x2F;error</span><br><span class="line">func2(global) &#x3D; 20; &#x2F;&#x2F;ok</span><br></pre></td></tr></table></figure>
+<p><code>func1</code>返回右值，<code>func2</code>返回左值，因此第一个<code>error</code>，第二个合法。在比如说，我们平时接触的<code>=</code>，返回的为引用，因此为左值，可以做一下运算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 0;</span><br><span class="line">(i &#x3D; 10) &#x3D; 11;</span><br></pre></td></tr></table></figure>
+<p>另外一个是，我们在类中的成员函数，设置为返回左值引用，那么就通过类对象<strong>链式</strong>调用方法；</p>
+<h2 id="左值转化为右值"><a href="#左值转化为右值" class="headerlink" title="左值转化为右值"></a>左值转化为右值</h2><p>这里介绍的几个标准库的函数，<strong>接受左值形参，返回右值</strong>，比如<code>+, -, *, /, &amp;</code>;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 1;</span><br><span class="line">int j &#x3D; 2;</span><br><span class="line">int z &#x3D; i + j;</span><br><span class="line">&#x2F;&#x2F; i ,j均为左值，相加产生的临时对象(右值)，赋值给z；</span><br><span class="line"></span><br><span class="line">int* p &#x3D; &amp;z; &#x2F;&#x2F; z为左值，返回的地址为右值；</span><br></pre></td></tr></table></figure>
+
+<h2 id="左值引用"><a href="#左值引用" class="headerlink" title="左值引用"></a>左值引用</h2><p>左值引用在cpp中相当于一个变量的别名，我们可以通过引用来修改原先值，主要应用在<strong>传参，返回值</strong>这两部分。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; 10;</span><br><span class="line">int&amp; j &#x3D; i;</span><br><span class="line">j++;	&#x2F;&#x2F; i &#x3D; 2 ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>从上面，看出，我们可以通过左值引用改变原对象，那么对于右值这种临时变量我们能不能，利用别名修改其内容呢，针对这一点，大佬们提出<strong>右值引用的概念</strong>， 两个左值引用符号为右值，&amp;&amp;。有了这个概念后，我们可以有这样的操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int&amp;&amp; i &#x3D; 10;</span><br><span class="line">i &#x3D; 11;, &#x2F;&#x2F;此时i&#x3D;11</span><br></pre></td></tr></table></figure>
+<p>这个例子的目的是<strong>展示我们能够通过右值引用修改临时对象</strong>，在这里看不出此种方式的优势，但是在类中，这种操作非常重要。</p>
+<h2 id="string类介绍"><a href="#string类介绍" class="headerlink" title="string类介绍"></a>string类介绍</h2><p>设计一个string类，最基本的需要三个函数：</p>
+<ul>
+<li>构造函数</li>
+<li>拷贝构造函数</li>
+<li>赋值函数<br>这三个函数在以下情景中实用:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string s1(&quot;fanzhihao&quot;);	&#x2F;&#x2F;  构造函数 </span><br><span class="line">string s2(s1);	&#x2F;&#x2F; 拷贝构造函数</span><br><span class="line">string s3;</span><br><span class="line">s3 &#x3D; s2;		&#x2F;&#x2F; 赋值函数</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>根据需求，下面我们来看下string类的具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">#ifndef __MYSTRING__</span><br><span class="line">#define __MYSTRING__</span><br><span class="line"></span><br><span class="line">class String</span><br><span class="line">&#123;</span><br><span class="line">public:                       </span><br><span class="line">   String(const char* cstr&#x3D;0);</span><br><span class="line">   String(const String&amp; str);           </span><br><span class="line">   String&amp; operator&#x3D;(const String&amp; str);</span><br><span class="line">   ~String();                                </span><br><span class="line">   char* get_c_str() const &#123; return m_data; &#125;</span><br><span class="line">private: </span><br><span class="line">   char* m_data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">#include &lt;cstring&gt;</span><br><span class="line"></span><br><span class="line">inline String::String(const char* cstr)</span><br><span class="line">&#123;  </span><br><span class="line">   if (cstr) &#123; </span><br><span class="line">      m_data &#x3D; new char[strlen(cstr)+1];</span><br><span class="line">      strcpy(m_data, cstr);</span><br><span class="line">   &#125;</span><br><span class="line">   else &#123;    </span><br><span class="line">      m_data &#x3D; new char[1];</span><br><span class="line">      *m_data &#x3D; &#39;\0&#39;;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline String::~String()</span><br><span class="line">&#123;</span><br><span class="line">   delete[] m_data;</span><br><span class="line">&#125;</span><br><span class="line">inline String&amp; String::operator&#x3D;(const String&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">   if (this &#x3D;&#x3D; &amp;str)</span><br><span class="line">      return *this;		&#x2F;&#x2F; 防止赋值误删内存数值</span><br><span class="line"></span><br><span class="line">   delete[] m_data;</span><br><span class="line">   m_data &#x3D; new char[ strlen(str.m_data) + 1 ];</span><br><span class="line">   strcpy(m_data, str.m_data);</span><br><span class="line">   return *this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline String::String(const String&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">   m_data &#x3D; new char[ strlen(str.m_data) + 1 ];</span><br><span class="line">   strcpy(m_data, str.m_data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上类使用起来没有问题，但是在某些应用场景下，可以进一步优化，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String createString(const char* p)</span><br><span class="line">&#123;</span><br><span class="line">	return String(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">String s1 &#x3D; createString(&quot;fanzhihao&quot;);	&#x2F;&#x2F; 1</span><br></pre></td></tr></table></figure>
+<p>当执行代码1时，此处会产生临时变量，也就是说<strong>createString()的返回值先通过拷贝构造函数产生临时对象Temp， 接下再一次调用拷贝构造函数创建变量s1</strong>；通过拷贝构造函数的实现，我们直到，这里面分配了两次内存。结合右值引用，能够修改临时对象值的特性，我们能不能，不执行第二次 拷贝构造函数呢？直接利用临时对象的内存呢？针对这一点，就出现了移动构造函数。</p>
+<h3 id="移动构造函数"><a href="#移动构造函数" class="headerlink" title="移动构造函数"></a>移动构造函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">inline String::String(String&amp;&amp; other)&#123;</span><br><span class="line">	this-&gt;m_data &#x3D; other.m_data;</span><br><span class="line">   other.m_data &#x3D; nullptr;	&#x2F;&#x2F; 类对象之间互为有缘</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类中有移动构造函数，那么第二阶段的拷贝赋值就不需要执行了，利用该函数夺取临时对象中的数据，只需要分配一次内存；</p>
+<h3 id="移动赋值函数"><a href="#移动赋值函数" class="headerlink" title="移动赋值函数"></a>移动赋值函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">inline String&amp; String::operator&#x3D;(String&amp;&amp; other)&#123;</span><br><span class="line">	if (this &#x3D;&#x3D; &amp;other)	return this;</span><br><span class="line">	this-&gt;m_data &#x3D; other.m_data;</span><br><span class="line">    </span><br><span class="line">   delete[] m_data;</span><br><span class="line">   m_data &#x3D; other-&gt;m_data;</span><br><span class="line">   </span><br><span class="line">   other-&gt;m_data &#x3D; nullptr;</span><br><span class="line">   return *this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="返回值是产生的临时对象"><a href="#返回值是产生的临时对象" class="headerlink" title="返回值是产生的临时对象"></a>返回值是产生的临时对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">class B &#123;</span><br><span class="line">public:</span><br><span class="line">    &#x2F;&#x2F;B(const B&amp; ano) &#x3D; delete;</span><br><span class="line">    &#x2F;&#x2F;B&amp; operator&#x3D;(const B&amp; ths) &#x3D; delete; </span><br><span class="line">    B() &#123; cout &lt;&lt; &quot;构造函数&quot; &lt;&lt; endl; &#125;</span><br><span class="line">    B(int a) &#123; cout &lt;&lt; &quot;一个参数构造函数&quot; &lt;&lt; endl; &#125;</span><br><span class="line">    B(const B&amp; ano) &#123; cout &lt;&lt; &quot;拷贝构造函数&quot; &lt;&lt; endl; &#125;</span><br><span class="line"></span><br><span class="line">    B&amp; operator&#x3D;(const B&amp; ths) &#123;</span><br><span class="line">        cout &lt;&lt; &quot;赋值操作&quot; &lt;&lt; endl;</span><br><span class="line">        return *this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    virtual ~B() &#123; cout &lt;&lt; &quot;析构函数&quot; &lt;&lt; endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">B func2() &#123;</span><br><span class="line">    cout &lt;&lt; &quot;test1 startt......&quot; &lt;&lt; endl;</span><br><span class="line">    B b;</span><br><span class="line">    cout &lt;&lt; &quot;test1 return ......&quot; &lt;&lt; endl;</span><br><span class="line">    return b;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 验证拷贝构造函数</span><br><span class="line">void test2() &#123;</span><br><span class="line">    B t &#x3D; func2();</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 验证赋值函数</span><br><span class="line">void test1() &#123;</span><br><span class="line">    cout &lt;&lt; &quot;test1 startt......&quot; &lt;&lt; endl;</span><br><span class="line">    B t;</span><br><span class="line">    cout &lt;&lt; &quot;test1 111111......&quot; &lt;&lt; endl;</span><br><span class="line">    t &#x3D; func2();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    test1();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>返回结果：<br>test1 startt……<br>构造函数<br>test1 111111……<br>test1 startt……<br>构造函数<br>test1 return ……<br>拷贝构造函数<br>析构函数<br>赋值操作<br>析构函数<br>析构函数</p>
+<p>从上看出：整个代码产生了三个对象，其中一个就是返回是的临时对象。该段代买在visual studio上执行， 如果在GCC编译上，结果和这个不同。原因是，有个Return Value Optimization（RVO）。</p>
+<h2 id="std-move"><a href="#std-move" class="headerlink" title="std::move()"></a>std::move()</h2><p><code>std::move()</code>位于utility中，该语句是讲左值类型强制转换为右值引用类型，在某种意义上，相当于是中类型强制转换，我们来看看其原型：<strong>原型还是别看了</strong>。大概就是通过<code>static_cast</code>将其变为右值引用。在这类需要回忆下cpp中的四种强制转换类型哈。看下实例：`</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;utility&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main(</span><br><span class="line">&#123;</span><br><span class="line">    string s &#x3D; &quot;fanzhihao&quot;;</span><br><span class="line">    vector&lt;string&gt; vec;</span><br><span class="line">    vec.push_back(s);</span><br><span class="line">    cout &lt;&lt; s &lt;&lt; endl;  &#x2F;&#x2F; fanzhihao      </span><br><span class="line">    vec.push_back(std::move(s));</span><br><span class="line">    cout &lt;&lt; s &lt;&lt;endl;   &#x2F;&#x2F;  </span><br><span class="line">&#125; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>从上，我们看出，vec从s中偷走了数据，这是因为<code>std::move()</code>将左值变为右值，然后执行vec中的移动构造函数。从而将字符串中数值置空。减少了开销；</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.internalpointers.com/post/c-rvalue-references-and-move-semantics-beginners">C++ rvalue references and move semantics for beginners</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.internalpointers.com/post/understanding-meaning-lvalues-and-rvalues-c">Understanding the meaning of lvalues and rvalues in C++</a></li>
+<li>候捷面向对象编程上</li>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/169268">右值和移动究竟解决了什么问题？</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/utility/move">std::move</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B7%A6%E5%80%BC/" rel="tag"># 左值</a>
+              <a href="/tags/%E5%8F%B3%E5%80%BC/" rel="tag"># 右值</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/22/%E6%8E%A2%E7%A9%B6%E6%A8%A1%E6%9D%BF/" rel="prev" title="探究模板">
+      <i class="fa fa-chevron-left"></i> 探究模板
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/26/%E6%8E%A2%E7%A9%B6static/" rel="next" title="探究static">
+      探究static <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%80%BC%E5%8F%B3%E5%80%BC%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">左值右值定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%BA%E5%B7%A6%E5%80%BC%E5%8F%B3%E5%80%BC"><span class="nav-number">2.</span> <span class="nav-text">返回值为左值右值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%80%BC%E8%BD%AC%E5%8C%96%E4%B8%BA%E5%8F%B3%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text">左值转化为右值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%80%BC%E5%BC%95%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">左值引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string%E7%B1%BB%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.</span> <span class="nav-text">string类介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">移动构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E8%B5%8B%E5%80%BC%E5%87%BD%E6%95%B0"><span class="nav-number">5.2.</span> <span class="nav-text">移动赋值函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E6%98%AF%E4%BA%A7%E7%94%9F%E7%9A%84%E4%B8%B4%E6%97%B6%E5%AF%B9%E8%B1%A1"><span class="nav-number">5.3.</span> <span class="nav-text">返回值是产生的临时对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#std-move"><span class="nav-number">6.</span> <span class="nav-text">std::move()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1_112 判断路径是否等于一个数题目 代码：123456789101112131415161718&#x2F;&#x2F; class Solution &amp;#123;&#x2F;&#x2F; public:&#x2F;&#x2F;     bool hasPathSum(TreeNode* root, int sum) &amp;#123;&#x2F;&#x2F;         if (root &amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="遍历树汇总">
+<meta property="og:url" content="http://yoursite.com/2020/04/26/%E9%81%8D%E5%8E%86%E6%A0%91%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="Zhihao&#39;s blog">
+<meta property="og:description" content="1_112 判断路径是否等于一个数题目 代码：123456789101112131415161718&#x2F;&#x2F; class Solution &amp;#123;&#x2F;&#x2F; public:&#x2F;&#x2F;     bool hasPathSum(TreeNode* root, int sum) &amp;#123;&#x2F;&#x2F;         if (root &amp;#">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/images/pasted-18.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-19.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-20.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-22.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-23.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-24.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-25.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-26.png">
+<meta property="article:published_time" content="2020-04-26T04:39:57.000Z">
+<meta property="article:modified_time" content="2020-04-26T10:08:21.778Z">
+<meta property="article:author" content="范志豪">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-18.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/26/%E9%81%8D%E5%8E%86%E6%A0%91%E6%B1%87%E6%80%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>遍历树汇总 | Zhihao's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhihao's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/26/%E9%81%8D%E5%8E%86%E6%A0%91%E6%B1%87%E6%80%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="范志豪">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhihao's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          遍历树汇总
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-04-26 12:39:57 / Modified: 18:08:21" itemprop="dateCreated datePublished" datetime="2020-04-26T12:39:57+08:00">2020-04-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-112-判断路径是否等于一个数"><a href="#1-112-判断路径是否等于一个数" class="headerlink" title="1_112 判断路径是否等于一个数"></a>1_112 判断路径是否等于一个数</h2><h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-18.png" alt="upload successful"></p>
+<h4 id="代码："><a href="#代码：" class="headerlink" title="代码："></a>代码：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; class Solution &#123;</span><br><span class="line">&#x2F;&#x2F; public:</span><br><span class="line">&#x2F;&#x2F;     bool hasPathSum(TreeNode* root, int sum) &#123;</span><br><span class="line">&#x2F;&#x2F;         if (root &#x3D;&#x3D; nullptr &amp;&amp; sum &#x3D;&#x3D; 0)</span><br><span class="line">&#x2F;&#x2F;             return true;</span><br><span class="line">&#x2F;&#x2F;         return  hasPathSum(root-&gt;right, sum - root-&gt;val) || hasPathSum(root-&gt;left, sum - root-&gt;val);</span><br><span class="line">&#x2F;&#x2F;     &#125;</span><br><span class="line">&#x2F;&#x2F; &#125;;</span><br><span class="line">&#x2F;&#x2F; 这种方法无法规避特殊输入&#96;[]和0&#96;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasPathSum(TreeNode* root, int sum) &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr) return false;</span><br><span class="line">        if (root-&gt;left &#x3D;&#x3D; nullptr &amp;&amp; root-&gt;right &#x3D;&#x3D; nullptr &amp;&amp; root-&gt;val &#x3D;&#x3D; sum) return true;</span><br><span class="line">        return  hasPathSum(root-&gt;right, sum - root-&gt;val) || hasPathSum(root-&gt;left, sum - root-&gt;val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="2-437统计路径上等于一个数的路径数"><a href="#2-437统计路径上等于一个数的路径数" class="headerlink" title="2_437统计路径上等于一个数的路径数"></a>2_437统计路径上等于一个数的路径数</h2><h4 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-19.png" alt="upload successful"></p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>路径起始点不一定是根目录，需要将每一个节点当起点，计算其路径数</li>
+<li>由于父亲节点的路径数 = 左子树 + 柚子树 + root，因此需要通过一个临时变量ret传递值；</li>
+</ul>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int pathSum(TreeNode* root, int sum) &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr)    return 0;</span><br><span class="line">        int ret &#x3D; traverse(root, sum) + pathSum(root-&gt;left, sum) + pathSum(root-&gt;right, sum);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 以root为根节点时等于target的数</span><br><span class="line">    int traverse(TreeNode* root, int sum)</span><br><span class="line">    &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr)    return 0;</span><br><span class="line">        int ret &#x3D; 0;</span><br><span class="line">        if (sum &#x3D;&#x3D; root-&gt;val)  ++ ret;</span><br><span class="line">        ret +&#x3D; traverse(root-&gt;left, sum - root-&gt;val) + traverse(root-&gt;right, sum - root-&gt;val);</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="3-572-子树"><a href="#3-572-子树" class="headerlink" title="3_572 子树"></a>3_572 子树</h2><p><img src="/images/pasted-20.png" alt="upload successful"></p>
+<h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isSubtree(TreeNode* s, TreeNode* t) &#123;</span><br><span class="line">        &#x2F;&#x2F; 布尔值返回值的传递通过 || &amp;&amp;</span><br><span class="line">        &#x2F;&#x2F; int 或者 指针 通过  + , &#x3D; 来链接</span><br><span class="line">        if(s &#x3D;&#x3D; nullptr)    return false;</span><br><span class="line">        return isSubtreeRoot(s, t) || isSubtree(s-&gt;left, t) || isSubtree(s-&gt;right, t);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 等于是继续比，不等于return false</span><br><span class="line">    bool isSubtreeRoot(TreeNode* root, TreeNode* t)</span><br><span class="line">    &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr &amp;&amp; t &#x3D;&#x3D; nullptr)    return true;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr || t &#x3D;&#x3D; nullptr)    return false;</span><br><span class="line">        if (root-&gt;val !&#x3D; t-&gt;val)    return false;</span><br><span class="line">        return isSubtreeRoot(root-&gt;right, t-&gt;right) &amp;&amp; isSubtreeRoot(root-&gt;left, t-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-101树的对称"><a href="#4-101树的对称" class="headerlink" title="4_101树的对称"></a>4_101树的对称</h2><h4 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-22.png" alt="upload successful"></p>
+<h4 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool isSymmetric(TreeNode* root) &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr)    return true;</span><br><span class="line">            return isSymmetric(root-&gt;left, root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    bool isSymmetric(TreeNode* t1, TreeNode* t2)</span><br><span class="line">    &#123;</span><br><span class="line">        if (t1 &#x3D;&#x3D; nullptr &amp;&amp; t2 &#x3D;&#x3D; nullptr) return true;</span><br><span class="line">        if (t1 &#x3D;&#x3D; nullptr || t2 &#x3D;&#x3D; nullptr) return false;</span><br><span class="line">        if(t1-&gt;val !&#x3D; t2-&gt;val)  return false;</span><br><span class="line">        return isSymmetric(t1-&gt;left, t2-&gt;right) &amp;&amp; isSymmetric(t1-&gt;right, t2-&gt;left);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-111最小路径"><a href="#5-111最小路径" class="headerlink" title="5_111最小路径"></a>5_111最小路径</h2><h4 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-23.png" alt="upload successful"></p>
+<h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><p>万丈高楼平地起的感觉</p>
+<h4 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> &#x2F;&#x2F; 错误解法，没有考虑左子树或者柚子树为空的情况</span><br><span class="line">&#x2F;&#x2F; class Solution &#123;</span><br><span class="line">&#x2F;&#x2F; public:</span><br><span class="line">&#x2F;&#x2F;     int minDepth(TreeNode* root) &#123;</span><br><span class="line">&#x2F;&#x2F;         if (root &#x3D;&#x3D;nullptr) return 0;</span><br><span class="line">&#x2F;&#x2F;         return min(minDepth(root-&gt;left), minDepth(root-&gt;right)) + 1;</span><br><span class="line">&#x2F;&#x2F;     &#125;</span><br><span class="line">&#x2F;&#x2F; &#125;;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int minDepth(TreeNode* root) &#123;</span><br><span class="line">        if (root &#x3D;&#x3D;nullptr) return 0;</span><br><span class="line">        int left &#x3D; minDepth(root-&gt;left);</span><br><span class="line">        int right &#x3D; minDepth(root-&gt;right);</span><br><span class="line">        if (left &#x3D;&#x3D; 0 || right &#x3D;&#x3D; 0) return left+ right +1;</span><br><span class="line">        return min(left, right) + 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="6-404统计左子节点的和"><a href="#6-404统计左子节点的和" class="headerlink" title="6_404统计左子节点的和"></a>6_404统计左子节点的和</h2><h4 id="题目-4"><a href="#题目-4" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-24.png" alt="upload successful"></p>
+<h4 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>通过<code>root == nullptr</code>确定前进的终点；</li>
+<li>对每个节点有以下两种情况：<ul>
+<li>树的左子节点 = 左子树左子节点和 + 柚子树左子节点；</li>
+<li>树的左子节点 = 左叶子节点 + 柚子树的左子节点和；</li>
+</ul>
+</li>
+<li>因此需要定义一个判断为叶子节点的函数；<h4 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    &#x2F;&#x2F; 判断节点为叶子节点</span><br><span class="line">    int sumOfLeftLeaves(TreeNode* root) &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr)    return 0;</span><br><span class="line">        if (isLeaf(root-&gt;left)) return root-&gt;left-&gt;val + sumOfLeftLeaves(root-&gt;right);</span><br><span class="line">        return sumOfLeftLeaves(root-&gt;left) + sumOfLeftLeaves(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    bool isLeaf(TreeNode* node)</span><br><span class="line">    &#123;</span><br><span class="line">        if (node &#x3D;&#x3D; nullptr)    return false;</span><br><span class="line">        return node-&gt;left &#x3D;&#x3D; nullptr &amp;&amp; node-&gt;right &#x3D;&#x3D; nullptr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="7-687-最长相同路径"><a href="#7-687-最长相同路径" class="headerlink" title="7_687 最长相同路径"></a>7_687 最长相同路径</h2><h4 id="题目-5"><a href="#题目-5" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-25.png" alt="upload successful"></p>
+<h4 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>需要定义一个全局变量，记录每个节点当根节点的最大路径</li>
+<li>一个数的最长路径 max(左子树， 柚子树)</li>
+<li>采用后续遍历，先定义两个局部参数保存左子树和柚子树的最长相同路径，然后通过与根节点比较是否相等；<h4 id="代码-5"><a href="#代码-5" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int path &#x3D; 0;</span><br><span class="line">    int longestUnivaluePath(TreeNode* root) &#123;</span><br><span class="line">        dfs(root);</span><br><span class="line">        return path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int dfs(TreeNode* root)</span><br><span class="line">    &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr)    return 0;</span><br><span class="line">        int left &#x3D; dfs(root-&gt;left);</span><br><span class="line">        int right &#x3D; dfs(root-&gt;right);</span><br><span class="line">        int leftPath &#x3D; root-&gt;left !&#x3D; nullptr&amp;&amp; root-&gt;left-&gt;val &#x3D;&#x3D; root-&gt;val ? left+1 : 0;</span><br><span class="line">        int rightPath &#x3D; root-&gt;right !&#x3D; nullptr &amp;&amp; root-&gt;right-&gt;val &#x3D;&#x3D; root-&gt;val ? right + 1 : 0;</span><br><span class="line">        path  &#x3D; max(path, leftPath + rightPath);</span><br><span class="line">        return max(leftPath, rightPath);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="8-找出特殊二叉树种第二下"><a href="#8-找出特殊二叉树种第二下" class="headerlink" title="8_找出特殊二叉树种第二下"></a>8_找出特殊二叉树种第二下</h2><h4 id="题目-6"><a href="#题目-6" class="headerlink" title="题目"></a>题目</h4><p><img src="/images/pasted-26.png" alt="upload successful"></p>
+<h4 id="思路-4"><a href="#思路-4" class="headerlink" title="思路"></a>思路</h4><ul>
+<li>这里还是万丈高楼的写法， 写出终止条件，</li>
+<li>定义左右子树返回的第二小值的（由于这个二叉树比较特别，可根据条件选择遍历）</li>
+<li>确定返回值；<h4 id="代码-6"><a href="#代码-6" class="headerlink" title="代码"></a>代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int findSecondMinimumValue(TreeNode* root) &#123;</span><br><span class="line">        if (root &#x3D;&#x3D; nullptr)    return -1;</span><br><span class="line">        if (root -&gt; left &#x3D;&#x3D; nullptr &amp;&amp; root-&gt;right &#x3D;&#x3D; nullptr) return -1;</span><br><span class="line">        int leftVal &#x3D; root-&gt;left-&gt;val;</span><br><span class="line">        int rightVal &#x3D; root-&gt;right-&gt;val;</span><br><span class="line">        if (leftVal &#x3D;&#x3D; root-&gt;val)   leftVal &#x3D; findSecondMinimumValue(root-&gt;left);</span><br><span class="line">        if (rightVal &#x3D;&#x3D; root-&gt;val)      rightVal &#x3D; findSecondMinimumValue(root-&gt;right);</span><br><span class="line">        if (leftVal !&#x3D; -1 &amp;&amp; rightVal !&#x3D; -1)    return min(leftVal, rightVal);</span><br><span class="line">        if (leftVal !&#x3D; -1)  return leftVal;</span><br><span class="line">        return rightVal;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/26/%E9%87%8D%E5%BB%BA%E6%A0%91%E6%B1%87%E6%80%BB/" rel="prev" title="重建树汇总">
+      <i class="fa fa-chevron-left"></i> 重建树汇总
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/26/%E5%B1%82%E6%AC%A1%E9%81%8D%E5%8E%86%E8%A7%A3%E6%B3%95/" rel="next" title="层次遍历解法">
+      层次遍历解法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-112-%E5%88%A4%E6%96%AD%E8%B7%AF%E5%BE%84%E6%98%AF%E5%90%A6%E7%AD%89%E4%BA%8E%E4%B8%80%E4%B8%AA%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">1_112 判断路径是否等于一个数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-number">1.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">代码：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-437%E7%BB%9F%E8%AE%A1%E8%B7%AF%E5%BE%84%E4%B8%8A%E7%AD%89%E4%BA%8E%E4%B8%80%E4%B8%AA%E6%95%B0%E7%9A%84%E8%B7%AF%E5%BE%84%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">2_437统计路径上等于一个数的路径数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.0.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">2.0.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-572-%E5%AD%90%E6%A0%91"><span class="nav-number">3.</span> <span class="nav-text">3_572 子树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">3.0.1.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-101%E6%A0%91%E7%9A%84%E5%AF%B9%E7%A7%B0"><span class="nav-number">4.</span> <span class="nav-text">4_101树的对称</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-2"><span class="nav-number">4.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">4.0.2.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-111%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84"><span class="nav-number">5.</span> <span class="nav-text">5_111最小路径</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-3"><span class="nav-number">5.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-1"><span class="nav-number">5.0.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="nav-number">5.0.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-404%E7%BB%9F%E8%AE%A1%E5%B7%A6%E5%AD%90%E8%8A%82%E7%82%B9%E7%9A%84%E5%92%8C"><span class="nav-number">6.</span> <span class="nav-text">6_404统计左子节点的和</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-4"><span class="nav-number">6.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-2"><span class="nav-number">6.0.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-4"><span class="nav-number">6.0.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-687-%E6%9C%80%E9%95%BF%E7%9B%B8%E5%90%8C%E8%B7%AF%E5%BE%84"><span class="nav-number">7.</span> <span class="nav-text">7_687 最长相同路径</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-5"><span class="nav-number">7.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-3"><span class="nav-number">7.0.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-5"><span class="nav-number">7.0.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E6%89%BE%E5%87%BA%E7%89%B9%E6%AE%8A%E4%BA%8C%E5%8F%89%E6%A0%91%E7%A7%8D%E7%AC%AC%E4%BA%8C%E4%B8%8B"><span class="nav-number">8.</span> <span class="nav-text">8_找出特殊二叉树种第二下</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE-6"><span class="nav-number">8.0.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-4"><span class="nav-number">8.0.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-6"><span class="nav-number">8.0.3.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">范志豪</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">范志豪</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
